@@ -16,7 +16,7 @@ function Header({ profile, currentPage, setCurrentPage }) {
   return (
     <header style={styles.header}>
       <div style={styles.headerLogo} onClick={() => setCurrentPage('dashboard')}>
-        <span style={{ background: theme.gradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 22 }}>✦</span>
+        <span style={{ color: theme.neon, fontSize: 18 }}>✦</span>
         Campus<span style={{ color: theme.neon }}>Anon</span>
       </div>
       {profile && (
@@ -51,7 +51,7 @@ function Sidebar({ profile, currentPage, setCurrentPage }) {
     { id: 'dashboard', icon: '✦', label: 'Discover' },
     { id: 'matches',   icon: '◇', label: 'Matches' },
     { id: 'chat',      icon: '◈', label: 'Messages' },
-    { id: 'profile',   icon: '◉', label: 'My Profile' },
+    { id: 'profile',   icon: '◉', label: 'Profile' },
     { id: 'settings',  icon: '⚙', label: 'Settings' },
   ];
   return (
@@ -70,7 +70,7 @@ function Sidebar({ profile, currentPage, setCurrentPage }) {
         <button key={id}
           style={currentPage === id ? { ...styles.sidebarItem, ...styles.sidebarItemActive } : styles.sidebarItem}
           onClick={() => setCurrentPage(id)}>
-          <span style={{ color: currentPage === id ? theme.neon : theme.textMuted, fontSize: 15, width: 18 }}>{icon}</span>
+          <span style={{ color: currentPage === id ? theme.neon : theme.textMuted, fontSize: 14, width: 18, textAlign: 'center' }}>{icon}</span>
           {label}
         </button>
       ))}
@@ -78,8 +78,8 @@ function Sidebar({ profile, currentPage, setCurrentPage }) {
       <div style={styles.sidebarStats}>
         {[['0', 'likes'], ['0', 'matches'], ['0', 'chats']].map(([n, l]) => (
           <div key={l} style={styles.statBox}>
-            <span style={{ fontSize: 18, fontWeight: 700, color: theme.neon, fontFamily: "'Space Mono', monospace" }}>{n}</span>
-            <span style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: 1 }}>{l}</span>
+            <span style={{ fontSize: 20, fontWeight: 800, color: theme.neon, fontFamily: "'Space Mono', monospace" }}>{n}</span>
+            <span>{l}</span>
           </div>
         ))}
       </div>
@@ -91,12 +91,15 @@ function Footer() {
   return (
     <footer style={styles.footer}>
       <span style={{ color: theme.neon }}>✦</span>
-      <span style={{ marginLeft: 8 }}>CampusAnon · anonymous connections</span>
-      <span style={{ margin: '0 16px', color: 'rgba(255,255,255,0.1)' }}>·</span>
-      <span>🔒 identities always protected</span>
-      <span style={{ marginLeft: 'auto', display: 'flex', gap: 12 }}>
-        <a href="#" style={styles.footerLink}>privacy</a>
-        <a href="#" style={styles.footerLink}>terms</a>
+      <span style={{ marginLeft: 8 }}>CampusAnon · Anonymous Connections</span>
+      <span style={{ margin: '0 16px', color: 'rgba(255,255,255,0.08)' }}>·</span>
+      <span>🔒 Identities Always Protected</span>
+      <span style={{ marginLeft: 'auto', display: 'flex', gap: 20, alignItems: 'center' }}>
+        <a href="#" style={styles.footerLink}>Privacy</a>
+        <a href="#" style={styles.footerLink}>Terms</a>
+        <span style={{ color: theme.textMuted }}>
+          Made with <span style={{ color: theme.neon }}>♥</span> by Siddhant
+        </span>
       </span>
     </footer>
   );
@@ -112,7 +115,7 @@ function InnerApp() {
       <div style={styles.appWrap}>
         <div style={styles.loadingWrap}>
           <span style={{ color: theme.neon, fontSize: 20 }}>✦</span>
-          <span>initializing...</span>
+          <span>Initializing...</span>
         </div>
       </div>
     );

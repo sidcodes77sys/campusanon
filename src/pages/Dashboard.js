@@ -42,7 +42,7 @@ export default function Dashboard() {
   if (loading) return (
     <div style={styles.loadingWrap}>
       <span style={{ color: theme.neon, fontSize: 20 }}>✦</span>
-      <span>loading profiles...</span>
+      <span>Loading Profiles...</span>
     </div>
   );
 
@@ -56,7 +56,7 @@ export default function Dashboard() {
       <p style={styles.pageSubtitle}>anonymous profiles · no names · genuine connections</p>
 
       {matchNotif && (
-        <div style={styles.matchBanner}>⚡ it's a match! check your matches tab</div>
+        <div style={styles.matchBanner}>⚡ It's a Match — Check Your Matches Tab</div>
       )}
 
       {card ? (
@@ -66,36 +66,51 @@ export default function Dashboard() {
             ...(action === 'liked' ? styles.cardLiked : {}),
             ...(action === 'passed' ? styles.cardPassed : {}),
           }}>
-            {/* top glow line */}
-            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: theme.gradient, boxShadow: '0 0 20px rgba(255,45,120,0.6)' }} />
-
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: theme.gradient, boxShadow: '0 0 20px rgba(255,45,120,0.5)' }} />
             <div style={styles.profileAvatar}>{card.alias?.[0] || '?'}</div>
             <div style={styles.profileAlias}>{card.alias}</div>
             <div style={styles.profileMeta}>
-              age {card.age}&nbsp;&nbsp;·&nbsp;&nbsp;
+              Age {card.age}&nbsp;&nbsp;·&nbsp;&nbsp;
               {isOnline(card.last_seen)
-                ? <span style={{ color: theme.success }}>● online</span>
-                : <span style={{ color: theme.textDim }}>● offline</span>}
+                ? <span style={{ color: theme.success }}>● Online</span>
+                : <span style={{ color: theme.textDim }}>● Offline</span>}
             </div>
             {card.bio && <p style={styles.profileBio}>"{card.bio}"</p>}
             <div style={styles.interestRow}>
               {(card.interests || []).map(i => <span key={i} style={styles.interestTag}>{i}</span>)}
             </div>
             <div style={styles.actionRow}>
-              <button style={styles.passBtn} onClick={handlePass} disabled={!!action}>✕ &nbsp;pass</button>
-              <button style={styles.likeBtn} onClick={handleLike} disabled={!!action}>♥ &nbsp;like</button>
+              <button style={styles.passBtn} onClick={handlePass} disabled={!!action}>✕ Pass</button>
+              <button style={styles.likeBtn} onClick={handleLike} disabled={!!action}>♥ Like</button>
             </div>
           </div>
           <div style={styles.cardCounter}>{current + 1} of {cards.length} profiles</div>
         </div>
       ) : (
-        <div style={styles.emptyState}>
-          <div style={{ fontSize: 52, marginBottom: 18, color: theme.neon }}>✦</div>
-          <h3 style={{ color: theme.text, marginBottom: 10, fontFamily: "'Space Mono', monospace" }}>you've seen everyone</h3>
-          <p style={{ marginBottom: 28, color: theme.textMuted }}>new profiles appear daily — check back soon</p>
-          <button style={{ ...styles.primaryBtn, width: 'auto', padding: '12px 32px' }}
-            onClick={() => { setCurrent(0); loadProfiles(); }}>
-            refresh
+        // ── Centered empty state with properly centered refresh button ──
+        <div style={{
+          display: 'flex', flexDirection: 'column', alignItems: 'center',
+          justifyContent: 'center', minHeight: '55vh', gap: 16, textAlign: 'center',
+        }}>
+          <div style={{ fontSize: 56, color: theme.neon, lineHeight: 1 }}>✦</div>
+          <h3 style={{
+            fontFamily: "'Space Mono', monospace", color: theme.text,
+            fontSize: 18, letterSpacing: 2, textTransform: 'uppercase',
+          }}>
+            You've Seen Everyone
+          </h3>
+          <p style={{ color: theme.textMuted, fontSize: 14, maxWidth: 280, lineHeight: 1.6 }}>
+            New profiles appear daily — check back soon
+          </p>
+          <button
+            style={{
+              ...styles.primaryBtn,
+              width: 'auto', padding: '13px 40px', marginTop: 8,
+              display: 'inline-block',
+            }}
+            onClick={() => { setCurrent(0); loadProfiles(); }}
+          >
+            Refresh Profiles
           </button>
         </div>
       )}

@@ -6,24 +6,18 @@
     <title>CampusAnon</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
       *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
       :root {
         --neon: #ff2d78;
-        --neon2: #bf5fff;
         --cyan: #00f0ff;
         --bg: #000008;
-        --card: rgba(10,10,20,0.85);
-        --border: rgba(255,255,255,0.06);
-        --text: #f0f0ff;
-        --muted: #5a5a8a;
       }
 
       html, body { height: 100%; background: var(--bg); overflow-x: hidden; }
 
-      /* ── Starfield Canvas ── */
       #starfield {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         z-index: 0; pointer-events: none;
@@ -31,56 +25,32 @@
 
       #root { position: relative; z-index: 1; min-height: 100vh; }
 
-      /* ── Scrollbar ── */
       ::-webkit-scrollbar { width: 4px; }
       ::-webkit-scrollbar-track { background: transparent; }
       ::-webkit-scrollbar-thumb { background: rgba(255,45,120,0.3); border-radius: 2px; }
 
-      /* ── Input focus glow ── */
       input:focus, textarea:focus {
         border-color: rgba(255,45,120,0.6) !important;
-        box-shadow: 0 0 0 3px rgba(255,45,120,0.1), 0 0 20px rgba(255,45,120,0.05) !important;
+        box-shadow: 0 0 0 3px rgba(255,45,120,0.1) !important;
         outline: none;
       }
 
-      /* ── Button hover ── */
       button { transition: transform 0.15s, opacity 0.15s, box-shadow 0.2s; }
       button:hover:not(:disabled) { transform: translateY(-1px); }
-      button:active:not(:disabled) { transform: translateY(0); }
+      button:active:not(:disabled) { transform: translateY(0px); }
 
-      /* ── Card glass effect ── */
-      .glass {
-        background: rgba(8,8,20,0.7);
-        backdrop-filter: blur(24px);
-        -webkit-backdrop-filter: blur(24px);
-        border: 1px solid rgba(255,255,255,0.06);
-      }
-
-      /* ── Animations ── */
       @keyframes fadeUp {
         from { opacity: 0; transform: translateY(20px); }
         to   { opacity: 1; transform: translateY(0); }
       }
       @keyframes pulse {
         0%, 100% { box-shadow: 0 0 15px rgba(255,45,120,0.3); }
-        50%       { box-shadow: 0 0 30px rgba(255,45,120,0.6), 0 0 60px rgba(255,45,120,0.2); }
-      }
-      @keyframes shimmer {
-        0%   { background-position: -200% center; }
-        100% { background-position: 200% center; }
+        50%       { box-shadow: 0 0 30px rgba(255,45,120,0.6), 0 0 60px rgba(255,45,120,0.15); }
       }
       @keyframes float {
         0%, 100% { transform: translateY(0px); }
         50%       { transform: translateY(-6px); }
       }
-      @keyframes rotateSlow {
-        from { transform: rotate(0deg); }
-        to   { transform: rotate(360deg); }
-      }
-
-      .fade-up { animation: fadeUp 0.5s ease forwards; }
-      .pulse-avatar { animation: pulse 3s ease-in-out infinite; }
-      .float { animation: float 4s ease-in-out infinite; }
     </style>
   </head>
   <body>
@@ -88,10 +58,8 @@
     <div id="root"></div>
 
     <script>
-      // ── Animated Starfield ──────────────────────────────────────────────────
       const canvas = document.getElementById('starfield');
       const ctx = canvas.getContext('2d');
-
       let W, H, stars = [], nebulas = [];
 
       function resize() {
@@ -101,49 +69,52 @@
 
       function initStars() {
         stars = [];
-        // Regular stars
-        for (let i = 0; i < 220; i++) {
+        // White and blue/cyan stars only — no red/pink
+        for (let i = 0; i < 240; i++) {
+          const rand = Math.random();
           stars.push({
             x: Math.random() * W,
             y: Math.random() * H,
             r: Math.random() * 1.4 + 0.2,
             alpha: Math.random() * 0.8 + 0.2,
-            speed: Math.random() * 0.3 + 0.05,
-            twinkleSpeed: Math.random() * 0.02 + 0.005,
+            speed: Math.random() * 0.25 + 0.04,
+            twinkleSpeed: Math.random() * 0.018 + 0.004,
             twinkleDir: Math.random() > 0.5 ? 1 : -1,
-            color: Math.random() > 0.85 ? '#bf5fff' : Math.random() > 0.7 ? '#00f0ff' : '#ffffff',
+            // Only white, soft blue, or cyan — NO pink/red
+            color: rand > 0.85 ? '#aaddff' : rand > 0.7 ? '#00f0ff' : '#ffffff',
+            glow: false,
           });
         }
-        // Bright star clusters
-        for (let i = 0; i < 12; i++) {
+        // Bright sparkle stars — white and cyan only
+        for (let i = 0; i < 14; i++) {
           stars.push({
             x: Math.random() * W,
             y: Math.random() * H,
-            r: Math.random() * 2.5 + 1.5,
-            alpha: Math.random() * 0.6 + 0.4,
-            speed: Math.random() * 0.1 + 0.02,
-            twinkleSpeed: Math.random() * 0.03 + 0.01,
+            r: Math.random() * 2 + 1.2,
+            alpha: Math.random() * 0.5 + 0.5,
+            speed: Math.random() * 0.08 + 0.02,
+            twinkleSpeed: Math.random() * 0.025 + 0.008,
             twinkleDir: 1,
-            color: '#ff2d78',
+            color: Math.random() > 0.5 ? '#ffffff' : '#00f0ff',
             glow: true,
           });
         }
-        // Nebula blobs
+        // Subtle nebula blobs — purple and cyan tones only
         nebulas = [];
-        const nebulaColors = [
-          'rgba(255,45,120,0.025)',
-          'rgba(191,95,255,0.02)',
-          'rgba(0,240,255,0.015)',
-          'rgba(255,45,120,0.015)',
+        const cols = [
+          'rgba(140,80,255,0.022)',
+          'rgba(0,240,255,0.016)',
+          'rgba(100,60,200,0.018)',
+          'rgba(0,200,255,0.012)',
+          'rgba(120,80,255,0.014)',
         ];
         for (let i = 0; i < 5; i++) {
           nebulas.push({
-            x: Math.random() * W,
-            y: Math.random() * H,
-            r: Math.random() * 300 + 150,
-            color: nebulaColors[i % nebulaColors.length],
-            dx: (Math.random() - 0.5) * 0.15,
-            dy: (Math.random() - 0.5) * 0.1,
+            x: Math.random() * W, y: Math.random() * H,
+            r: Math.random() * 280 + 140,
+            color: cols[i],
+            dx: (Math.random() - 0.5) * 0.12,
+            dy: (Math.random() - 0.5) * 0.08,
           });
         }
       }
@@ -151,7 +122,6 @@
       function draw() {
         ctx.clearRect(0, 0, W, H);
 
-        // Draw nebulas
         nebulas.forEach(n => {
           n.x += n.dx; n.y += n.dy;
           if (n.x < -n.r) n.x = W + n.r;
@@ -167,7 +137,6 @@
           ctx.fill();
         });
 
-        // Draw stars
         stars.forEach(s => {
           s.alpha += s.twinkleSpeed * s.twinkleDir;
           if (s.alpha >= 1)   { s.alpha = 1;   s.twinkleDir = -1; }
@@ -179,13 +148,12 @@
           ctx.globalAlpha = s.alpha;
 
           if (s.glow) {
-            const g = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 6);
+            const g = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 5);
             g.addColorStop(0, s.color);
-            g.addColorStop(0.3, s.color.replace(')', ',0.3)').replace('rgb', 'rgba'));
             g.addColorStop(1, 'transparent');
             ctx.fillStyle = g;
             ctx.beginPath();
-            ctx.arc(s.x, s.y, s.r * 6, 0, Math.PI * 2);
+            ctx.arc(s.x, s.y, s.r * 5, 0, Math.PI * 2);
             ctx.fill();
           }
 
@@ -197,13 +165,11 @@
           // Cross sparkle for bigger stars
           if (s.r > 1.5) {
             ctx.strokeStyle = s.color;
-            ctx.globalAlpha = s.alpha * 0.4;
+            ctx.globalAlpha = s.alpha * 0.35;
             ctx.lineWidth = 0.5;
             ctx.beginPath();
-            ctx.moveTo(s.x - s.r * 3, s.y);
-            ctx.lineTo(s.x + s.r * 3, s.y);
-            ctx.moveTo(s.x, s.y - s.r * 3);
-            ctx.lineTo(s.x, s.y + s.r * 3);
+            ctx.moveTo(s.x - s.r * 3, s.y); ctx.lineTo(s.x + s.r * 3, s.y);
+            ctx.moveTo(s.x, s.y - s.r * 3); ctx.lineTo(s.x, s.y + s.r * 3);
             ctx.stroke();
           }
 
@@ -213,9 +179,7 @@
         requestAnimationFrame(draw);
       }
 
-      resize();
-      initStars();
-      draw();
+      resize(); initStars(); draw();
       window.addEventListener('resize', () => { resize(); initStars(); });
     </script>
   </body>
