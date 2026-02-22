@@ -25,11 +25,7 @@ export default function AuthPage() {
   async function handleSignup(e) {
     e.preventDefault(); setError(''); setInfo('');
     if (!COLLEGE_DOMAINS.some(d => email.endsWith('@' + d))) { setError(`only @cse.iiitp.ac.in or @ece.iiitp.ac.in emails allowed`); return; }
-```
 
-Then update your `.env` file:
-```
-REACT_APP_COLLEGE_DOMAIN=cse.iiitp.ac.in,ece.iiitp.ac.in
     if (!gender || !lookingFor || !age) { setError('please fill all fields'); return; }
     if (parseInt(age) < 18) { setError('you must be 18 or older'); return; }
     setLoading(true);
