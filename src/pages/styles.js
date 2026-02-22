@@ -125,8 +125,8 @@ export const styles = {
     flex: 1, padding: 24, minHeight: '85vh',
   },
   authCard: {
-    ...glass, borderRadius: 24, padding: '50px 48px',
-    width: '100%', maxWidth: 440,
+    ...glass, borderRadius: 24, padding: 'clamp(28px, 6vw, 50px) clamp(20px, 6vw, 48px)',
+    width: '100%', maxWidth: 440, width: '100%',
     boxShadow: `0 0 0 1px rgba(255,45,120,0.08), 0 40px 100px rgba(0,0,0,0.7)`,
     animation: 'fadeUp 0.5s ease forwards', position: 'relative', overflow: 'hidden',
   },
@@ -411,4 +411,49 @@ export const styles = {
     fontFamily: RC, letterSpacing: 1, textTransform: 'uppercase',
   },
   footerLink: { color: theme.textMuted, textDecoration: 'none' },
+};
+
+// ── Mobile / Responsive styles ─────────────────────────────────────────────
+export const mobileStyles = {
+  hamburger: {
+    background: 'none', border: 'none', cursor: 'pointer',
+    padding: '8px', marginRight: 12, display: 'flex',
+    flexDirection: 'column', gap: 5, flexShrink: 0,
+  },
+  hamburgerLine: {
+    display: 'block', width: 22, height: 2,
+    background: '#f0f0f0', borderRadius: 2,
+  },
+  overlay: {
+    position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)',
+    zIndex: 199, backdropFilter: 'blur(4px)',
+  },
+  drawer: {
+    position: 'fixed', top: 0, left: 0, bottom: 0, width: 280,
+    zIndex: 200, transition: 'transform 0.3s cubic-bezier(0.4,0,0.2,1)',
+    background: 'rgba(0,0,0,0.97)', backdropFilter: 'blur(24px)',
+    borderRight: '1px solid rgba(255,255,255,0.07)',
+    overflowY: 'auto',
+  },
+  sidebarMobile: {
+    padding: '20px 14px 30px', display: 'flex',
+    flexDirection: 'column', gap: 2, minHeight: '100%',
+  },
+  sidebarClose: {
+    background: 'none', border: 'none', color: 'rgba(200,200,200,0.5)',
+    fontSize: 18, cursor: 'pointer', alignSelf: 'flex-end',
+    padding: '4px 8px', marginBottom: 16,
+  },
+  bottomNav: {
+    position: 'fixed', bottom: 0, left: 0, right: 0, height: 64,
+    background: 'rgba(0,0,0,0.97)', backdropFilter: 'blur(20px)',
+    borderTop: '1px solid rgba(255,255,255,0.06)',
+    display: 'flex', alignItems: 'center', justifyContent: 'space-around',
+    zIndex: 100, padding: '0 8px',
+  },
+  bottomNavBtn: {
+    background: 'none', border: 'none', cursor: 'pointer',
+    display: 'flex', flexDirection: 'column', alignItems: 'center',
+    padding: '8px 16px', fontFamily: "'Roboto Condensed', sans-serif",
+  },
 };
