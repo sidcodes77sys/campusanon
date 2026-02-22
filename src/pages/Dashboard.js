@@ -39,18 +39,25 @@ export default function Dashboard() {
     setTimeout(() => { setCurrent(c => c + 1); setAction(null); }, 500);
   }
 
-  if (loading) return <div style={styles.loadingWrap}><span style={{color: theme.neon}}>◈</span>&nbsp;loading profiles...</div>;
+  if (loading) return (
+    <div style={styles.loadingWrap}>
+      <span style={{ color: theme.neon, fontSize: 20 }}>✦</span>
+      <span>loading profiles...</span>
+    </div>
+  );
 
   const card = cards[current];
 
   return (
     <div style={styles.page}>
       <h2 style={styles.pageTitle}>
-        <span style={{color: theme.neon}}>◈</span> Discover
+        <span style={{ color: theme.neon }}>✦</span> Discover
       </h2>
-      <p style={styles.pageSubtitle}>anonymous profiles · no names · just vibes</p>
+      <p style={styles.pageSubtitle}>anonymous profiles · no names · genuine connections</p>
 
-      {matchNotif && <div style={styles.matchBanner}>⚡ it's a match — check your matches tab</div>}
+      {matchNotif && (
+        <div style={styles.matchBanner}>⚡ it's a match! check your matches tab</div>
+      )}
 
       {card ? (
         <div style={styles.discoverWrap}>
@@ -59,32 +66,35 @@ export default function Dashboard() {
             ...(action === 'liked' ? styles.cardLiked : {}),
             ...(action === 'passed' ? styles.cardPassed : {}),
           }}>
-            {/* top accent line */}
-            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: theme.gradient }} />
+            {/* top glow line */}
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: theme.gradient, boxShadow: '0 0 20px rgba(255,45,120,0.6)' }} />
+
             <div style={styles.profileAvatar}>{card.alias?.[0] || '?'}</div>
             <div style={styles.profileAlias}>{card.alias}</div>
             <div style={styles.profileMeta}>
-              age {card.age} &nbsp;·&nbsp; {isOnline(card.last_seen)
-                ? <span style={{color: theme.success}}>● online</span>
-                : <span style={{color: theme.textDim}}>● offline</span>}
+              age {card.age}&nbsp;&nbsp;·&nbsp;&nbsp;
+              {isOnline(card.last_seen)
+                ? <span style={{ color: theme.success }}>● online</span>
+                : <span style={{ color: theme.textDim }}>● offline</span>}
             </div>
             {card.bio && <p style={styles.profileBio}>"{card.bio}"</p>}
             <div style={styles.interestRow}>
               {(card.interests || []).map(i => <span key={i} style={styles.interestTag}>{i}</span>)}
             </div>
             <div style={styles.actionRow}>
-              <button style={styles.passBtn} onClick={handlePass} disabled={!!action}>✕ pass</button>
-              <button style={styles.likeBtn} onClick={handleLike} disabled={!!action}>♥ like</button>
+              <button style={styles.passBtn} onClick={handlePass} disabled={!!action}>✕ &nbsp;pass</button>
+              <button style={styles.likeBtn} onClick={handleLike} disabled={!!action}>♥ &nbsp;like</button>
             </div>
           </div>
-          <div style={styles.cardCounter}>{current + 1} / {cards.length} profiles</div>
+          <div style={styles.cardCounter}>{current + 1} of {cards.length} profiles</div>
         </div>
       ) : (
         <div style={styles.emptyState}>
-          <div style={{fontSize: 48, marginBottom: 16}}>◈</div>
-          <h3 style={{color: theme.text, marginBottom: 8}}>you've seen everyone</h3>
-          <p style={{marginBottom: 24}}>check back later for new profiles</p>
-          <button style={{...styles.primaryBtn, width: 'auto', padding: '10px 28px'}} onClick={() => { setCurrent(0); loadProfiles(); }}>
+          <div style={{ fontSize: 52, marginBottom: 18, color: theme.neon }}>✦</div>
+          <h3 style={{ color: theme.text, marginBottom: 10, fontFamily: "'Space Mono', monospace" }}>you've seen everyone</h3>
+          <p style={{ marginBottom: 28, color: theme.textMuted }}>new profiles appear daily — check back soon</p>
+          <button style={{ ...styles.primaryBtn, width: 'auto', padding: '12px 32px' }}
+            onClick={() => { setCurrent(0); loadProfiles(); }}>
             refresh
           </button>
         </div>

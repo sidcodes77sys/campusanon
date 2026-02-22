@@ -16,16 +16,16 @@ function Header({ profile, currentPage, setCurrentPage }) {
   return (
     <header style={styles.header}>
       <div style={styles.headerLogo} onClick={() => setCurrentPage('dashboard')}>
-        <span style={{ color: theme.neon }}>◈</span>
-        <span>Campus<span style={{ color: theme.neon }}>Anon</span></span>
+        <span style={{ background: theme.gradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: 22 }}>✦</span>
+        Campus<span style={{ color: theme.neon }}>Anon</span>
       </div>
       {profile && (
         <nav style={styles.headerNav}>
           {[
-            { id: 'dashboard', label: '⌖ Discover' },
-            { id: 'matches',   label: '◇ Matches' },
-            { id: 'chat',      label: '◈ Chat' },
-            { id: 'profile',   label: '◉ Profile' },
+            { id: 'dashboard', label: 'Discover' },
+            { id: 'matches',   label: 'Matches' },
+            { id: 'chat',      label: 'Chat' },
+            { id: 'profile',   label: 'Profile' },
           ].map(({ id, label }) => (
             <button key={id}
               style={currentPage === id ? { ...styles.navBtn, ...styles.navBtnActive } : styles.navBtn}
@@ -48,7 +48,7 @@ function Header({ profile, currentPage, setCurrentPage }) {
 function Sidebar({ profile, currentPage, setCurrentPage }) {
   if (!profile) return null;
   const items = [
-    { id: 'dashboard', icon: '⌖', label: 'Discover' },
+    { id: 'dashboard', icon: '✦', label: 'Discover' },
     { id: 'matches',   icon: '◇', label: 'Matches' },
     { id: 'chat',      icon: '◈', label: 'Messages' },
     { id: 'profile',   icon: '◉', label: 'My Profile' },
@@ -61,7 +61,7 @@ function Sidebar({ profile, currentPage, setCurrentPage }) {
         <div>
           <div style={styles.sidebarAlias}>{profile.alias}</div>
           <div style={styles.sidebarGender}>
-            {profile.gender === 'male' ? '♂ male' : profile.gender === 'female' ? '♀ female' : '⚧ nb'}
+            {profile.gender === 'male' ? '♂ male' : profile.gender === 'female' ? '♀ female' : '⚧ non-binary'}
           </div>
         </div>
       </div>
@@ -70,15 +70,16 @@ function Sidebar({ profile, currentPage, setCurrentPage }) {
         <button key={id}
           style={currentPage === id ? { ...styles.sidebarItem, ...styles.sidebarItemActive } : styles.sidebarItem}
           onClick={() => setCurrentPage(id)}>
-          <span style={{ fontFamily: 'monospace', fontSize: 16 }}>{icon}</span> {label}
+          <span style={{ color: currentPage === id ? theme.neon : theme.textMuted, fontSize: 15, width: 18 }}>{icon}</span>
+          {label}
         </button>
       ))}
       <hr style={styles.sidebarDivider} />
       <div style={styles.sidebarStats}>
         {[['0', 'likes'], ['0', 'matches'], ['0', 'chats']].map(([n, l]) => (
           <div key={l} style={styles.statBox}>
-            <span style={{ fontSize: 18, fontWeight: 700, color: theme.neon, fontFamily: "'Share Tech Mono', monospace" }}>{n}</span>
-            <span>{l}</span>
+            <span style={{ fontSize: 18, fontWeight: 700, color: theme.neon, fontFamily: "'Space Mono', monospace" }}>{n}</span>
+            <span style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: 1 }}>{l}</span>
           </div>
         ))}
       </div>
@@ -89,12 +90,12 @@ function Sidebar({ profile, currentPage, setCurrentPage }) {
 function Footer() {
   return (
     <footer style={styles.footer}>
-      <span style={{ color: theme.neon }}>◈</span>
-      <span style={{ marginLeft: 6 }}>CampusAnon · anonymous connections</span>
-      <span style={{ marginLeft: 20 }}>🔒 identities protected</span>
-      <span style={{ marginLeft: 'auto' }}>
+      <span style={{ color: theme.neon }}>✦</span>
+      <span style={{ marginLeft: 8 }}>CampusAnon · anonymous connections</span>
+      <span style={{ margin: '0 16px', color: 'rgba(255,255,255,0.1)' }}>·</span>
+      <span>🔒 identities always protected</span>
+      <span style={{ marginLeft: 'auto', display: 'flex', gap: 12 }}>
         <a href="#" style={styles.footerLink}>privacy</a>
-        <span style={{ margin: '0 6px', color: theme.textDim }}>·</span>
         <a href="#" style={styles.footerLink}>terms</a>
       </span>
     </footer>
@@ -110,7 +111,8 @@ function InnerApp() {
     return (
       <div style={styles.appWrap}>
         <div style={styles.loadingWrap}>
-          <span style={{ color: theme.neon }}>◈</span>&nbsp; initializing...
+          <span style={{ color: theme.neon, fontSize: 20 }}>✦</span>
+          <span>initializing...</span>
         </div>
       </div>
     );
@@ -145,9 +147,5 @@ function InnerApp() {
 }
 
 export default function App() {
-  return (
-    <AuthProvider>
-      <InnerApp />
-    </AuthProvider>
-  );
+  return <AuthProvider><InnerApp /></AuthProvider>;
 }
