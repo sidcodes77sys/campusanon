@@ -17,10 +17,7 @@ export default function AuthPage() {
 
   async function handleLogin(e) {
     e.preventDefault(); setError(''); setInfo('');
-    if (!isValidCollegeEmail(email)) {
-      setError('only valid IIIT-P roll number emails allowed');
-      return;
-    }
+    if (!isValidCollegeEmail(email)) { setError('only valid IIIT-P roll number emails allowed'); return; }
     setLoading(true);
     try { await signIn({ email, password }); }
     catch (err) { setError(err.message || 'login failed'); }
@@ -29,42 +26,61 @@ export default function AuthPage() {
 
   async function handleSignup(e) {
     e.preventDefault(); setError(''); setInfo('');
-    if (!isValidCollegeEmail(email)) {
-      setError('only valid IIIT-P roll number emails allowed');
-      return;
-    }
+    if (!isValidCollegeEmail(email)) { setError('only valid IIIT-P roll number emails allowed'); return; }
     if (!gender || !lookingFor || !age) { setError('please fill all fields'); return; }
     if (parseInt(age) < 18) { setError('you must be 18 or older'); return; }
     setLoading(true);
     try {
-      await signUp({ email, password, gender, lookingFor, age: parseInt(age) });
+      const { data, error } = await supabase.auth.signUp({
+        email, password,
+        options: { data: { gender, looking_for: lookingFor, age } }
+      });
+      if (error) throw error;
+      // Insert profile immediately
+      if (data?.user) {
+        await supabase.from('profiles').upsert({
+          id: data.user.id, email, gender,
+          looking_for: lookingFor, age: parseInt(age),
+          alias: generateAlias(), interests: [], bio: '',
+        });
+      }
       setMode('verify');
-      setInfo(`a 6-digit code was sent to ${email}`);
-    } catch (err) { setError(err.message || 'signup failed'); }
-    finally { setLoading(false); }
+      setInfo(`verification code sent to ${email} — check inbox & spam`);
+    } catch (err) {
+      setError(err.message || 'signup failed — try again');
+    } finally { setLoading(false); }
+  }
+
+  function generateAlias() {
+    const words = ['Comet','Blaze','Frost','Storm','Ember','Drift','Sage','Echo','Flux','Gale','Prism','Nova'];
+    return words[Math.floor(Math.random() * words.length)] + '_' + Math.floor(Math.random() * 90 + 10);
   }
 
   async function handleVerify(e) {
-    e.preventDefault(); setError(''); setInfo('');
-    if (otp.length !== 8) { setError('enter the 8-digit code'); return; }
+    e.preventDefault(); setError(''); 
+    if (otp.length < 6) { setError('enter the full verification code'); return; }
     setLoading(true);
     try {
-      const { error } = await supabase.auth.verifyOtp({ email, token: otp, type: 'email' });
-      if (error) throw error;
+      // Try both OTP types
+      let result = await supabase.auth.verifyOtp({ email, token: otp, type: 'signup' });
+      if (result.error) {
+        result = await supabase.auth.verifyOtp({ email, token: otp, type: 'email' });
+      }
+      if (result.error) throw result.error;
       await signIn({ email, password });
     } catch (err) {
-      setError(err.message || 'invalid code — check your email and try again');
+      setError('invalid or expired code — request a new one');
     } finally { setLoading(false); }
   }
 
   async function handleResend() {
     setError(''); setInfo(''); setLoading(true);
     try {
-const { error } = await supabase.auth.resend({ type: 'signup', email, options: { emailRedirectTo: window.location.origin } });
-      if (error) throw error;
-      setInfo('new code sent — check your inbox');
-    } catch (err) { setError(err.message || 'failed to resend'); }
-    finally { setLoading(false); }
+      await supabase.auth.resend({ type: 'signup', email });
+      setInfo('new code sent — check inbox & spam folder');
+    } catch (err) {
+      setError('failed to resend — wait a minute and try again');
+    } finally { setLoading(false); }
   }
 
   return (
@@ -74,9 +90,7 @@ const { error } = await supabase.auth.resend({ type: 'signup', email, options: {
         <div style={{ textAlign: 'center', marginBottom: 6 }}>
           <span style={{ fontSize: 36, background: theme.gradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>✦</span>
         </div>
-        <div style={styles.authTitle}>
-          Campus<span style={{ color: theme.neon }}>Anon</span>
-        </div>
+        <div style={styles.authTitle}>Campus<span style={{ color: theme.neon }}>Anon</span></div>
         <div style={styles.authSubtitle}>
           anonymous dating for your college community<br/>
           <span style={{ color: theme.textDim, fontSize: 11 }}>your identity is always protected</span>
@@ -88,7 +102,7 @@ const { error } = await supabase.auth.resend({ type: 'signup', email, options: {
         {mode === 'login' && (
           <form onSubmit={handleLogin}>
             <label style={styles.label}>college email</label>
-            <input style={styles.input} type="email" placeholder={`rollno@cse.iiitp.ac.in`}
+            <input style={styles.input} type="email" placeholder="rollno@cse.iiitp.ac.in"
               value={email} onChange={e => setEmail(e.target.value)} required />
             <label style={styles.label}>password</label>
             <input style={styles.input} type="password" placeholder="••••••••"
@@ -141,29 +155,28 @@ const { error } = await supabase.auth.resend({ type: 'signup', email, options: {
           </form>
         )}
 
-        {/* ── VERIFY OTP ── */}
+        {/* ── VERIFY ── */}
         {mode === 'verify' && (
           <form onSubmit={handleVerify}>
             <div style={{ textAlign: 'center', marginBottom: 24, fontSize: 13, color: theme.textMuted, lineHeight: 1.7 }}>
-              Check your college inbox at<br/>
-              <span style={{ color: theme.text, fontFamily: "'Space Mono', monospace", fontSize: 12 }}>{email}</span>
+              Check your inbox and spam folder at<br/>
+              <span style={{ color: theme.text, fontFamily: "'Space Mono',monospace", fontSize: 12 }}>{email}</span>
             </div>
-            <label style={styles.label}>8-digit verification code</label>
+            <label style={styles.label}>verification code</label>
             <input
-              style={{ ...styles.input, textAlign: 'center', fontSize: 28, letterSpacing: 12, fontFamily: "'Space Mono', monospace", padding: '16px' }}
+              style={{ ...styles.input, textAlign: 'center', fontSize: 24, letterSpacing: 8, fontFamily: "'Space Mono',monospace", padding: '16px' }}
               type="text" inputMode="numeric" maxLength={8} placeholder="········"
               value={otp} onChange={e => setOtp(e.target.value.replace(/\D/g, '').slice(0, 8))}
               required autoFocus
             />
             {error && <div style={styles.error}>⚠ &nbsp;{error}</div>}
-            <button style={styles.primaryBtn} type="submit" disabled={loading || otp.length !== 8}>
+            <button style={styles.primaryBtn} type="submit" disabled={loading || otp.length < 6}>
               {loading ? 'verifying...' : 'verify & enter →'}
             </button>
             <div style={styles.authSwitch}>
-              didn't get it?&nbsp;
-              <span style={styles.authLink} onClick={handleResend}>resend code</span>
+              didn't get it? <span style={styles.authLink} onClick={handleResend}>resend code</span>
               &nbsp;·&nbsp;
-              <span style={styles.authLink} onClick={() => { setMode('signup'); setError(''); setInfo(''); }}>go back</span>
+              <span style={styles.authLink} onClick={() => { setMode('signup'); setError(''); setInfo(''); setOtp(''); }}>go back</span>
             </div>
           </form>
         )}
