@@ -5,8 +5,7 @@ const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-export const COLLEGE_DOMAINS = process.env.REACT_APP_COLLEGE_DOMAIN.split(',');
-export const COLLEGE_DOMAIN = COLLEGE_DOMAINS[0]; // for display purposes
+export const COLLEGE_DOMAIN = process.env.REACT_APP_COLLEGE_DOMAIN || 'college.edu';
 
 // ─── Auth ─────────────────────────────────────────────────────────────────────
 

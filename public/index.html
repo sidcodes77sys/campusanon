@@ -118,9 +118,9 @@
       function draw() {
         ctx.clearRect(0, 0, W, H);
         nebulas.forEach(n => {
-          n.x += n.dx; n.y += n.dy;
-          if (n.x < -n.r) n.x = W + n.r; if (n.x > W + n.r) n.x = -n.r;
-          if (n.y < -n.r) n.y = H + n.r; if (n.y > H + n.r) n.y = -n.r;
+          
+          
+          
           const g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r);
           g.addColorStop(0, n.color); g.addColorStop(1, 'transparent');
           ctx.fillStyle = g;
@@ -130,8 +130,8 @@
           s.alpha += s.twinkleSpeed * s.twinkleDir;
           if (s.alpha >= 1)   { s.alpha = 1;   s.twinkleDir = -1; }
           if (s.alpha <= 0.1) { s.alpha = 0.1; s.twinkleDir =  1; }
-          s.y -= s.speed;
-          if (s.y < -s.r) { s.y = H + s.r; s.x = Math.random() * W; }
+          
+          
           ctx.save(); ctx.globalAlpha = s.alpha;
           if (s.glow) {
             const g = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 5);
