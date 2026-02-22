@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { signUp, signIn, COLLEGE_DOMAIN } from '../lib/supabase';
+import { signUp, signIn, COLLEGE_DOMAINS, COLLEGE_DOMAIN } from '../lib/supabase';
 import { styles, theme } from './styles';
 
 export default function AuthPage() {
