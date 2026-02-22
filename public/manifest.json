@@ -1,0 +1,12 @@
+{
+  "short_name": "CampusAnon",
+  "name": "CampusAnon - Anonymous College Dating",
+  "icons": [
+    { "src": "/favicon-192.png", "type": "image/png", "sizes": "192x192" },
+    { "src": "/logo512.png",     "type": "image/png", "sizes": "512x512" }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#ff2d78",
+  "background_color": "#000008"
+}

@@ -2,9 +2,9 @@
 
 export const theme = {
   bg: 'transparent',
-  bgCard: 'rgba(8,8,22,0.78)',
-  bgSurface: 'rgba(12,12,30,0.82)',
-  bgHover: 'rgba(20,20,48,0.9)',
+  bgCard: 'rgba(0,0,0,0.82)',
+  bgSurface: 'rgba(0,0,0,0.85)',
+  bgHover: 'rgba(5,5,5,0.92)',
   border: 'rgba(255,255,255,0.07)',
   neon: '#ff2d78',
   neonDim: 'rgba(255,45,120,0.12)',
@@ -12,16 +12,16 @@ export const theme = {
   neonGlowSm: '0 0 14px rgba(255,45,120,0.35)',
   cyan: '#00f0ff',
   cyanDim: 'rgba(0,240,255,0.1)',
-  text: '#f0f0ff',
-  textMuted: 'rgba(200,200,255,0.45)',
-  textDim: 'rgba(150,150,200,0.22)',
+  text: '#f0f0f0',
+  textMuted: 'rgba(200,200,200,0.45)',
+  textDim: 'rgba(150,150,150,0.22)',
   success: '#00ff88',
   error: '#ff4466',
   gradient: 'linear-gradient(135deg, #ff2d78 0%, #bf5fff 100%)',
 };
 
 export const glass = {
-  background: 'rgba(8,8,22,0.78)',
+  background: 'rgba(0,0,0,0.82)',
   backdropFilter: 'blur(24px)',
   WebkitBackdropFilter: 'blur(24px)',
   border: '1px solid rgba(255,255,255,0.07)',
@@ -53,8 +53,8 @@ export const styles = {
   },
   headerLogo: {
     fontSize: 20, fontWeight: 800, cursor: 'pointer', marginRight: 'auto',
-    fontFamily: RC, color: theme.text, letterSpacing: 3, textTransform: 'uppercase',
-    display: 'flex', alignItems: 'center', gap: 10,
+    fontFamily: RC, color: theme.text, letterSpacing: 0, textTransform: 'uppercase',
+    display: 'flex', alignItems: 'center', gap: 0,
   },
   headerNav: { display: 'flex', gap: 4 },
   navBtn: {
@@ -329,7 +329,7 @@ export const styles = {
   chatHeaderStatus: { fontSize: 11, color: theme.textMuted, marginTop: 2, fontFamily: RC, letterSpacing: 0.5 },
   messagesArea: {
     flex: 1, overflowY: 'auto', padding: '30px',
-    display: 'flex', flexDirection: 'column', gap: 12, background: 'rgba(0,0,8,0.25)',
+    display: 'flex', flexDirection: 'column', gap: 12, background: 'rgba(0,0,0,0.3)',
   },
   msgWrapMe:   { display: 'flex', flexDirection: 'column', alignItems: 'flex-end' },
   msgWrapThem: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start' },

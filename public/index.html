@@ -4,25 +4,30 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>CampusAnon</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon-180.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/logo192.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#ff2d78" />
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
     <style>
       *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-      :root {
-        --neon: #ff2d78;
-        --cyan: #00f0ff;
-        --bg: #000008;
-      }
-
-      html, body { height: 100%; background: var(--bg); overflow-x: hidden; }
+      html, body { height: 100%; background: #000000; overflow-x: hidden; }
 
       #starfield {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         z-index: 0; pointer-events: none;
       }
-
       #root { position: relative; z-index: 1; min-height: 100vh; }
 
       ::-webkit-scrollbar { width: 4px; }
@@ -69,113 +74,82 @@
 
       function initStars() {
         stars = [];
-        // White and blue/cyan stars only — no red/pink
         for (let i = 0; i < 240; i++) {
-          const rand = Math.random();
+          const r = Math.random();
           stars.push({
-            x: Math.random() * W,
-            y: Math.random() * H,
+            x: Math.random() * W, y: Math.random() * H,
             r: Math.random() * 1.4 + 0.2,
             alpha: Math.random() * 0.8 + 0.2,
             speed: Math.random() * 0.25 + 0.04,
             twinkleSpeed: Math.random() * 0.018 + 0.004,
             twinkleDir: Math.random() > 0.5 ? 1 : -1,
-            // Only white, soft blue, or cyan — NO pink/red
-            color: rand > 0.85 ? '#aaddff' : rand > 0.7 ? '#00f0ff' : '#ffffff',
+            color: '#ffffff',
             glow: false,
           });
         }
-        // Bright sparkle stars — white and cyan only
+        // Bright sparkle stars — white and cyan only, NO red
         for (let i = 0; i < 14; i++) {
           stars.push({
-            x: Math.random() * W,
-            y: Math.random() * H,
+            x: Math.random() * W, y: Math.random() * H,
             r: Math.random() * 2 + 1.2,
             alpha: Math.random() * 0.5 + 0.5,
             speed: Math.random() * 0.08 + 0.02,
             twinkleSpeed: Math.random() * 0.025 + 0.008,
             twinkleDir: 1,
-            color: Math.random() > 0.5 ? '#ffffff' : '#00f0ff',
+            color: '#ffffff',
             glow: true,
           });
         }
-        // Subtle nebula blobs — purple and cyan tones only
         nebulas = [];
         const cols = [
-          'rgba(140,80,255,0.022)',
-          'rgba(0,240,255,0.016)',
-          'rgba(100,60,200,0.018)',
-          'rgba(0,200,255,0.012)',
+          'rgba(140,80,255,0.022)', 'rgba(0,240,255,0.016)',
+          'rgba(100,60,200,0.018)', 'rgba(0,200,255,0.012)',
           'rgba(120,80,255,0.014)',
         ];
         for (let i = 0; i < 5; i++) {
           nebulas.push({
             x: Math.random() * W, y: Math.random() * H,
-            r: Math.random() * 280 + 140,
-            color: cols[i],
-            dx: (Math.random() - 0.5) * 0.12,
-            dy: (Math.random() - 0.5) * 0.08,
+            r: Math.random() * 280 + 140, color: cols[i],
+            dx: (Math.random() - 0.5) * 0.12, dy: (Math.random() - 0.5) * 0.08,
           });
         }
       }
 
       function draw() {
         ctx.clearRect(0, 0, W, H);
-
         nebulas.forEach(n => {
           n.x += n.dx; n.y += n.dy;
-          if (n.x < -n.r) n.x = W + n.r;
-          if (n.x > W + n.r) n.x = -n.r;
-          if (n.y < -n.r) n.y = H + n.r;
-          if (n.y > H + n.r) n.y = -n.r;
+          if (n.x < -n.r) n.x = W + n.r; if (n.x > W + n.r) n.x = -n.r;
+          if (n.y < -n.r) n.y = H + n.r; if (n.y > H + n.r) n.y = -n.r;
           const g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r);
-          g.addColorStop(0, n.color);
-          g.addColorStop(1, 'transparent');
+          g.addColorStop(0, n.color); g.addColorStop(1, 'transparent');
           ctx.fillStyle = g;
-          ctx.beginPath();
-          ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-          ctx.fill();
+          ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2); ctx.fill();
         });
-
         stars.forEach(s => {
           s.alpha += s.twinkleSpeed * s.twinkleDir;
           if (s.alpha >= 1)   { s.alpha = 1;   s.twinkleDir = -1; }
           if (s.alpha <= 0.1) { s.alpha = 0.1; s.twinkleDir =  1; }
           s.y -= s.speed;
           if (s.y < -s.r) { s.y = H + s.r; s.x = Math.random() * W; }
-
-          ctx.save();
-          ctx.globalAlpha = s.alpha;
-
+          ctx.save(); ctx.globalAlpha = s.alpha;
           if (s.glow) {
             const g = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 5);
-            g.addColorStop(0, s.color);
-            g.addColorStop(1, 'transparent');
+            g.addColorStop(0, s.color); g.addColorStop(1, 'transparent');
             ctx.fillStyle = g;
-            ctx.beginPath();
-            ctx.arc(s.x, s.y, s.r * 5, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.beginPath(); ctx.arc(s.x, s.y, s.r * 5, 0, Math.PI * 2); ctx.fill();
           }
-
           ctx.fillStyle = s.color;
-          ctx.beginPath();
-          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Cross sparkle for bigger stars
+          ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2); ctx.fill();
           if (s.r > 1.5) {
-            ctx.strokeStyle = s.color;
-            ctx.globalAlpha = s.alpha * 0.35;
-            ctx.lineWidth = 0.5;
+            ctx.strokeStyle = s.color; ctx.globalAlpha = s.alpha * 0.35; ctx.lineWidth = 0.5;
             ctx.beginPath();
             ctx.moveTo(s.x - s.r * 3, s.y); ctx.lineTo(s.x + s.r * 3, s.y);
             ctx.moveTo(s.x, s.y - s.r * 3); ctx.lineTo(s.x, s.y + s.r * 3);
             ctx.stroke();
           }
-
           ctx.restore();
         });
-
         requestAnimationFrame(draw);
       }
 

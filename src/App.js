@@ -16,8 +16,8 @@ function Header({ profile, currentPage, setCurrentPage }) {
   return (
     <header style={styles.header}>
       <div style={styles.headerLogo} onClick={() => setCurrentPage('dashboard')}>
-        <span style={{ color: theme.neon, fontSize: 18 }}>✦</span>
-        Campus<span style={{ color: theme.neon }}>Anon</span>
+        <span style={{ color: theme.neon, fontSize: 18, marginRight: 8 }}>✦</span>
+        <span style={{ letterSpacing: 3 }}>CAMPUS<span style={{ color: theme.neon }}>ANON</span></span>
       </div>
       {profile && (
         <nav style={styles.headerNav}>
