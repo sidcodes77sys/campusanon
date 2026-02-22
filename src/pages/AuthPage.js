@@ -60,7 +60,7 @@ export default function AuthPage() {
   async function handleResend() {
     setError(''); setInfo(''); setLoading(true);
     try {
-      const { error } = await supabase.auth.resend({ type: 'signup', email });
+const { error } = await supabase.auth.resend({ type: 'signup', email, options: { emailRedirectTo: window.location.origin } });
       if (error) throw error;
       setInfo('new code sent — check your inbox');
     } catch (err) { setError(err.message || 'failed to resend'); }
