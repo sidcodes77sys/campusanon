@@ -49,7 +49,7 @@ export default function AuthPage() {
     if (otp.length !== 8) { setError('enter the 8-digit code'); return; }
     setLoading(true);
     try {
-      const { error } = await supabase.auth.verifyOtp({ email, token: otp, type: 'signup' });
+      const { error } = await supabase.auth.verifyOtp({ email, token: otp, type: 'email' });
       if (error) throw error;
       await signIn({ email, password });
     } catch (err) {
