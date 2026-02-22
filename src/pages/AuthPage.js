@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { signUp, signIn, COLLEGE_DOMAINS, COLLEGE_DOMAIN } from '../lib/supabase';
+import { signUp, signIn, isValidCollegeEmail, COLLEGE_DOMAIN } from '../lib/supabase';
+import { supabase } from '../lib/supabase';
 import { styles, theme } from './styles';
 
 export default function AuthPage() {
@@ -9,13 +10,17 @@ export default function AuthPage() {
   const [gender, setGender] = useState('');
   const [lookingFor, setLookingFor] = useState('');
   const [age, setAge] = useState('');
+  const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
   const [info, setInfo] = useState('');
   const [loading, setLoading] = useState(false);
 
   async function handleLogin(e) {
     e.preventDefault(); setError(''); setInfo('');
-    if (!COLLEGE_DOMAINS.some(d => email.endsWith('@' + d))) { setError(`only @cse.iiitp.ac.in or @ece.iiitp.ac.in emails allowed`); return; }
+    if (!isValidCollegeEmail(email)) {
+      setError('only valid IIIT-P roll number emails allowed');
+      return;
+    }
     setLoading(true);
     try { await signIn({ email, password }); }
     catch (err) { setError(err.message || 'login failed'); }
@@ -24,25 +29,48 @@ export default function AuthPage() {
 
   async function handleSignup(e) {
     e.preventDefault(); setError(''); setInfo('');
-    if (!COLLEGE_DOMAINS.some(d => email.endsWith('@' + d))) { setError(`only @cse.iiitp.ac.in or @ece.iiitp.ac.in emails allowed`); return; }
+    if (!isValidCollegeEmail(email)) {
+      setError('only valid IIIT-P roll number emails allowed');
+      return;
+    }
     if (!gender || !lookingFor || !age) { setError('please fill all fields'); return; }
     if (parseInt(age) < 18) { setError('you must be 18 or older'); return; }
     setLoading(true);
     try {
       await signUp({ email, password, gender, lookingFor, age: parseInt(age) });
-      setInfo(`verification email sent to ${email} — check your inbox`);
-      setMode('login');
+      setMode('verify');
+      setInfo(`a 6-digit code was sent to ${email}`);
     } catch (err) { setError(err.message || 'signup failed'); }
+    finally { setLoading(false); }
+  }
+
+  async function handleVerify(e) {
+    e.preventDefault(); setError(''); setInfo('');
+    if (otp.length !== 6) { setError('enter the 6-digit code'); return; }
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.verifyOtp({ email, token: otp, type: 'signup' });
+      if (error) throw error;
+      await signIn({ email, password });
+    } catch (err) {
+      setError(err.message || 'invalid code — check your email and try again');
+    } finally { setLoading(false); }
+  }
+
+  async function handleResend() {
+    setError(''); setInfo(''); setLoading(true);
+    try {
+      const { error } = await supabase.auth.resend({ type: 'signup', email });
+      if (error) throw error;
+      setInfo('new code sent — check your inbox');
+    } catch (err) { setError(err.message || 'failed to resend'); }
     finally { setLoading(false); }
   }
 
   return (
     <div style={styles.authWrap}>
       <div style={styles.authCard}>
-        {/* top gradient line */}
         <div style={styles.authCardTopLine} />
-
-        {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: 6 }}>
           <span style={{ fontSize: 36, background: theme.gradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>✦</span>
         </div>
@@ -56,10 +84,11 @@ export default function AuthPage() {
 
         {info && <div style={styles.infoBox}>✓ &nbsp;{info}</div>}
 
-        {mode === 'login' ? (
+        {/* ── LOGIN ── */}
+        {mode === 'login' && (
           <form onSubmit={handleLogin}>
             <label style={styles.label}>college email</label>
-            <input style={styles.input} type="email" placeholder={`you@${COLLEGE_DOMAIN}`}
+            <input style={styles.input} type="email" placeholder={`rollno@cse.iiitp.ac.in`}
               value={email} onChange={e => setEmail(e.target.value)} required />
             <label style={styles.label}>password</label>
             <input style={styles.input} type="password" placeholder="••••••••"
@@ -72,10 +101,13 @@ export default function AuthPage() {
               no account? <span style={styles.authLink} onClick={() => { setMode('signup'); setError(''); setInfo(''); }}>sign up</span>
             </div>
           </form>
-        ) : (
+        )}
+
+        {/* ── SIGNUP ── */}
+        {mode === 'signup' && (
           <form onSubmit={handleSignup}>
             <label style={styles.label}>college email</label>
-            <input style={styles.input} type="email" placeholder={`you@${COLLEGE_DOMAIN}`}
+            <input style={styles.input} type="email" placeholder="rollno@cse.iiitp.ac.in"
               value={email} onChange={e => setEmail(e.target.value)} required />
             <label style={styles.label}>password</label>
             <input style={styles.input} type="password" placeholder="min 6 characters"
@@ -101,10 +133,37 @@ export default function AuthPage() {
             </div>
             {error && <div style={styles.error}>⚠ &nbsp;{error}</div>}
             <button style={styles.primaryBtn} type="submit" disabled={loading}>
-              {loading ? 'creating account...' : 'join the void →'}
+              {loading ? 'sending code...' : 'send verification code →'}
             </button>
             <div style={styles.authSwitch}>
               have an account? <span style={styles.authLink} onClick={() => { setMode('login'); setError(''); setInfo(''); }}>login</span>
+            </div>
+          </form>
+        )}
+
+        {/* ── VERIFY OTP ── */}
+        {mode === 'verify' && (
+          <form onSubmit={handleVerify}>
+            <div style={{ textAlign: 'center', marginBottom: 24, fontSize: 13, color: theme.textMuted, lineHeight: 1.7 }}>
+              Check your college inbox at<br/>
+              <span style={{ color: theme.text, fontFamily: "'Space Mono', monospace", fontSize: 12 }}>{email}</span>
+            </div>
+            <label style={styles.label}>6-digit verification code</label>
+            <input
+              style={{ ...styles.input, textAlign: 'center', fontSize: 28, letterSpacing: 12, fontFamily: "'Space Mono', monospace", padding: '16px' }}
+              type="text" inputMode="numeric" maxLength={6} placeholder="······"
+              value={otp} onChange={e => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+              required autoFocus
+            />
+            {error && <div style={styles.error}>⚠ &nbsp;{error}</div>}
+            <button style={styles.primaryBtn} type="submit" disabled={loading || otp.length !== 6}>
+              {loading ? 'verifying...' : 'verify & enter →'}
+            </button>
+            <div style={styles.authSwitch}>
+              didn't get it?&nbsp;
+              <span style={styles.authLink} onClick={handleResend}>resend code</span>
+              &nbsp;·&nbsp;
+              <span style={styles.authLink} onClick={() => { setMode('signup'); setError(''); setInfo(''); }}>go back</span>
             </div>
           </form>
         )}

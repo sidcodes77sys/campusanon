@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './lib/AuthContext';
-import { signOut } from './lib/supabase';
+import { signOut, getUserStats } from './lib/supabase';
 import AuthPage from './pages/AuthPage';
 import Dashboard from './pages/Dashboard';
 import MatchesPage from './pages/MatchesPage';
@@ -62,7 +62,7 @@ function Header({ profile, currentPage, setCurrentPage, onMenuToggle }) {
   );
 }
 
-function Sidebar({ profile, currentPage, setCurrentPage, isOpen, onClose }) {
+function Sidebar({ profile, currentPage, setCurrentPage, isOpen, onClose, stats }) {
   const isMobile = useIsMobile();
   async function handleLogout() { try { await signOut(); } catch(e) {} }
   if (!profile) return null;
@@ -79,9 +79,7 @@ function Sidebar({ profile, currentPage, setCurrentPage, isOpen, onClose }) {
 
   const inner = (
     <div style={isMobile ? m.sidebarMobile : { padding: '28px 14px', display: 'flex', flexDirection: 'column', gap: 2 }}>
-      {isMobile && (
-        <button onClick={onClose} style={m.sidebarClose}>✕</button>
-      )}
+      {isMobile && <button onClick={onClose} style={m.sidebarClose}>✕</button>}
       <div style={styles.sidebarUser}>
         <div style={styles.sidebarAvatar}>{profile.alias?.[0]}</div>
         <div>
@@ -102,7 +100,11 @@ function Sidebar({ profile, currentPage, setCurrentPage, isOpen, onClose }) {
       ))}
       <hr style={styles.sidebarDivider} />
       <div style={styles.sidebarStats}>
-        {[['0','likes'],['0','matches'],['0','chats']].map(([n,l]) => (
+        {[
+          [stats.likes,   'likes'],
+          [stats.matches, 'matches'],
+          [stats.chats,   'chats'],
+        ].map(([n, l]) => (
           <div key={l} style={styles.statBox}>
             <span style={{ fontSize: 20, fontWeight: 800, color: theme.neon, fontFamily: "'Space Mono',monospace" }}>{n}</span>
             <span>{l}</span>
@@ -167,7 +169,9 @@ function Footer() {
       <span style={{ marginLeft: 'auto', display: 'flex', gap: 20, alignItems: 'center' }}>
         <a href="#" style={styles.footerLink}>Privacy</a>
         <a href="#" style={styles.footerLink}>Terms</a>
-        <span style={{ color: theme.textMuted }}>Made with <span style={{ color: theme.neon }}>♥</span> by Siddhant</span>
+        <span style={{ color: theme.textMuted }}>
+          Made with <span style={{ color: theme.neon }}>♥</span> for students
+        </span>
       </span>
     </footer>
   );
@@ -178,7 +182,14 @@ function InnerApp() {
   const [currentPage, setCurrentPage] = useState('dashboard');
   const [activeChatPartner, setActiveChatPartner] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [stats, setStats] = useState({ likes: 0, matches: 0, chats: 0 });
   const isMobile = useIsMobile();
+
+  useEffect(() => {
+    if (profile) {
+      getUserStats(profile.id).then(setStats).catch(console.error);
+    }
+  }, [profile, currentPage]); // refresh stats on page change
 
   if (loading) return (
     <div style={styles.appWrap}>
@@ -201,7 +212,11 @@ function InnerApp() {
     <div style={styles.appWrap}>
       <Header profile={profile} currentPage={currentPage} setCurrentPage={setCurrentPage} onMenuToggle={() => setMenuOpen(o => !o)} />
       <div style={{ ...styles.body, paddingBottom: isMobile ? 64 : 0 }}>
-        <Sidebar profile={profile} currentPage={currentPage} setCurrentPage={setCurrentPage} isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
+        <Sidebar
+          profile={profile} currentPage={currentPage}
+          setCurrentPage={setCurrentPage} isOpen={menuOpen}
+          onClose={() => setMenuOpen(false)} stats={stats}
+        />
         <main style={{ ...styles.main, padding: isMobile ? '0' : undefined }}>
           {currentPage === 'dashboard' && <Dashboard />}
           {currentPage === 'matches'   && <MatchesPage setCurrentPage={setCurrentPage} setActiveChatPartner={setActiveChatPartner} />}
