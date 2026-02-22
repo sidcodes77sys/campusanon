@@ -46,7 +46,7 @@ export default function AuthPage() {
 
   async function handleVerify(e) {
     e.preventDefault(); setError(''); setInfo('');
-    if (otp.length !== 6) { setError('enter the 6-digit code'); return; }
+    if (otp.length !== 8) { setError('enter the 8-digit code'); return; }
     setLoading(true);
     try {
       const { error } = await supabase.auth.verifyOtp({ email, token: otp, type: 'signup' });
@@ -148,15 +148,15 @@ export default function AuthPage() {
               Check your college inbox at<br/>
               <span style={{ color: theme.text, fontFamily: "'Space Mono', monospace", fontSize: 12 }}>{email}</span>
             </div>
-            <label style={styles.label}>6-digit verification code</label>
+            <label style={styles.label}>8-digit verification code</label>
             <input
               style={{ ...styles.input, textAlign: 'center', fontSize: 28, letterSpacing: 12, fontFamily: "'Space Mono', monospace", padding: '16px' }}
-              type="text" inputMode="numeric" maxLength={6} placeholder="······"
-              value={otp} onChange={e => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+              type="text" inputMode="numeric" maxLength={8} placeholder="········"
+              value={otp} onChange={e => setOtp(e.target.value.replace(/\D/g, '').slice(0, 8))}
               required autoFocus
             />
             {error && <div style={styles.error}>⚠ &nbsp;{error}</div>}
-            <button style={styles.primaryBtn} type="submit" disabled={loading || otp.length !== 6}>
+            <button style={styles.primaryBtn} type="submit" disabled={loading || otp.length !== 8}>
               {loading ? 'verifying...' : 'verify & enter →'}
             </button>
             <div style={styles.authSwitch}>
