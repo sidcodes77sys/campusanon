@@ -102,9 +102,9 @@
         }
         nebulas = [];
         const cols = [
-          'rgba(140,80,255,0.022)', 'rgba(0,240,255,0.016)',
-          'rgba(100,60,200,0.018)', 'rgba(0,200,255,0.012)',
-          'rgba(120,80,255,0.014)',
+          'rgba(150,150,150,0.02)', 'rgba(180,180,180,0.015)',
+          'rgba(130,130,130,0.018)', 'rgba(160,160,160,0.012)',
+          'rgba(140,140,140,0.014)',
         ];
         for (let i = 0; i < 5; i++) {
           nebulas.push({
@@ -165,4 +165,15 @@
   /* Mobile page padding */
   .mobile-page { padding: 20px 16px !important; }
 }
+</style>
+<style>
+  /* Grey button hover darkening */
+  button:hover:not(:disabled) {
+    filter: brightness(0.75) !important;
+    transform: translateY(-1px);
+  }
+  button:active:not(:disabled) {
+    filter: brightness(0.6) !important;
+    transform: translateY(0px);
+  }
 </style>

@@ -6,18 +6,18 @@ export const theme = {
   bgSurface: 'rgba(0,0,0,0.85)',
   bgHover: 'rgba(5,5,5,0.92)',
   border: 'rgba(255,255,255,0.07)',
-  neon: '#ff2d78',
-  neonDim: 'rgba(255,45,120,0.12)',
-  neonGlow: '0 0 30px rgba(255,45,120,0.5), 0 0 60px rgba(255,45,120,0.15)',
-  neonGlowSm: '0 0 14px rgba(255,45,120,0.35)',
-  cyan: '#00f0ff',
-  cyanDim: 'rgba(0,240,255,0.1)',
+  neon: '#888888',
+  neonDim: 'rgba(140,140,140,0.12)',
+  neonGlow: '0 0 30px rgba(140,140,140,0.5), 0 0 60px rgba(140,140,140,0.15)',
+  neonGlowSm: '0 0 14px rgba(140,140,140,0.35)',
+  cyan: '#aaaaaa',
+  cyanDim: 'rgba(160,160,160,0.1)',
   text: '#f0f0f0',
   textMuted: 'rgba(200,200,200,0.45)',
   textDim: 'rgba(150,150,150,0.22)',
   success: '#00ff88',
   error: '#ff4466',
-  gradient: 'linear-gradient(135deg, #ff2d78 0%, #bf5fff 100%)',
+  gradient: 'linear-gradient(135deg, #777777 0%, #444444 100%)',
 };
 
 export const glass = {
@@ -65,11 +65,11 @@ export const styles = {
   },
   navBtnActive: {
     color: theme.neon, background: theme.neonDim,
-    boxShadow: `inset 0 0 0 1px rgba(255,45,120,0.2)`,
+    boxShadow: `inset 0 0 0 1px rgba(140,140,140,0.2)`,
   },
   headerRight: { display: 'flex', alignItems: 'center', gap: 14, marginLeft: 28 },
   aliasTag: {
-    background: theme.neonDim, boxShadow: `inset 0 0 0 1px rgba(255,45,120,0.25), ${theme.neonGlowSm}`,
+    background: theme.neonDim, boxShadow: `inset 0 0 0 1px rgba(140,140,140,0.25), ${theme.neonGlowSm}`,
     padding: '5px 16px', borderRadius: 20, fontSize: 11,
     color: theme.neon, fontFamily: mono, letterSpacing: 2,
   },
@@ -127,12 +127,12 @@ export const styles = {
   authCard: {
     ...glass, borderRadius: 24, padding: 'clamp(28px, 6vw, 50px) clamp(20px, 6vw, 48px)',
     width: '100%', maxWidth: 440, width: '100%',
-    boxShadow: `0 0 0 1px rgba(255,45,120,0.08), 0 40px 100px rgba(0,0,0,0.7)`,
+    boxShadow: `0 0 0 1px rgba(140,140,140,0.08), 0 40px 100px rgba(0,0,0,0.7)`,
     animation: 'fadeUp 0.5s ease forwards', position: 'relative', overflow: 'hidden',
   },
   authCardTopLine: {
     position: 'absolute', top: 0, left: 0, right: 0, height: 2,
-    background: theme.gradient, boxShadow: '0 0 20px rgba(255,45,120,0.5)',
+    background: theme.gradient, boxShadow: '0 0 20px rgba(140,140,140,0.5)',
   },
   authTitle: {
     fontSize: 30, fontWeight: 800, textAlign: 'center', marginBottom: 8,
@@ -166,7 +166,7 @@ export const styles = {
   },
   genderBtnActive: {
     background: theme.neonDim, color: theme.text,
-    border: `1px solid rgba(255,45,120,0.4)`, boxShadow: theme.neonGlowSm,
+    border: `1px solid rgba(140,140,140,0.4)`, boxShadow: theme.neonGlowSm,
   },
   primaryBtn: {
     display: 'block', width: '100%', padding: '14px',
@@ -174,7 +174,7 @@ export const styles = {
     borderRadius: 12, cursor: 'pointer', fontSize: 15, fontWeight: 800,
     marginTop: 10, textAlign: 'center', fontFamily: RC,
     letterSpacing: 2, textTransform: 'uppercase',
-    boxShadow: `${theme.neonGlowSm}, 0 4px 20px rgba(255,45,120,0.3)`,
+    boxShadow: `${theme.neonGlowSm}, 0 4px 20px rgba(140,140,140,0.3)`,
   },
   secondaryBtn: {
     display: 'block', padding: '11px 20px', background: 'none', color: theme.textMuted,
@@ -202,7 +202,7 @@ export const styles = {
     padding: '80px 20px', color: theme.textMuted, textAlign: 'center',
   },
   matchBanner: {
-    background: 'rgba(255,45,120,0.08)', border: '1px solid rgba(255,45,120,0.25)',
+    background: 'rgba(140,140,140,0.08)', border: '1px solid rgba(140,140,140,0.25)',
     color: theme.neon, padding: '16px 24px', borderRadius: 14, marginBottom: 28,
     textAlign: 'center', fontWeight: 800, fontSize: 15,
     boxShadow: theme.neonGlowSm, fontFamily: RC, letterSpacing: 2, textTransform: 'uppercase',
@@ -233,18 +233,18 @@ export const styles = {
   profileBio: {
     color: 'rgba(200,200,255,0.6)', fontSize: 13, fontStyle: 'italic',
     marginBottom: 20, lineHeight: 1.7,
-    borderLeft: '2px solid rgba(255,45,120,0.3)', paddingLeft: 14, textAlign: 'left',
+    borderLeft: '2px solid rgba(140,140,140,0.3)', paddingLeft: 14, textAlign: 'left',
   },
   cardLiked:  { transform: 'translateX(130px) rotate(15deg)', opacity: 0 },
   cardPassed: { transform: 'translateX(-130px) rotate(-15deg)', opacity: 0 },
   interestRow: { display: 'flex', flexWrap: 'wrap', gap: 7, justifyContent: 'center', marginBottom: 28 },
   interestTag: {
-    background: 'rgba(0,240,255,0.08)', border: '1px solid rgba(0,240,255,0.2)',
+    background: 'rgba(160,160,160,0.08)', border: '1px solid rgba(160,160,160,0.2)',
     borderRadius: 20, padding: '5px 14px', fontSize: 11,
     color: theme.cyan, fontFamily: RC, letterSpacing: 1.2, fontWeight: 600, textTransform: 'uppercase',
   },
   interestTagSm: {
-    background: 'rgba(0,240,255,0.08)', borderRadius: 20, padding: '4px 10px',
+    background: 'rgba(160,160,160,0.08)', borderRadius: 20, padding: '4px 10px',
     fontSize: 10, color: theme.cyan, fontFamily: RC, letterSpacing: 1, fontWeight: 600,
   },
   actionRow: { display: 'flex', gap: 16, justifyContent: 'center' },
@@ -258,7 +258,7 @@ export const styles = {
     padding: '13px 36px', background: theme.gradient, color: '#fff',
     border: 'none', borderRadius: 50, cursor: 'pointer', fontSize: 14,
     fontWeight: 700, fontFamily: RC, letterSpacing: 1.5, textTransform: 'uppercase',
-    boxShadow: `${theme.neonGlowSm}, 0 4px 20px rgba(255,45,120,0.35)`,
+    boxShadow: `${theme.neonGlowSm}, 0 4px 20px rgba(140,140,140,0.35)`,
   },
   cardCounter: {
     marginTop: 22, color: theme.textDim, fontSize: 11,
@@ -336,7 +336,7 @@ export const styles = {
   msgBubbleMe: {
     background: theme.gradient, color: '#fff', borderRadius: '20px 20px 4px 20px',
     padding: '12px 20px', maxWidth: 320, fontSize: 14, lineHeight: 1.6,
-    boxShadow: `${theme.neonGlowSm}, 0 4px 15px rgba(255,45,120,0.2)`, fontFamily: RC, fontWeight: 400,
+    boxShadow: `${theme.neonGlowSm}, 0 4px 15px rgba(140,140,140,0.2)`, fontFamily: RC, fontWeight: 400,
   },
   msgBubbleThem: {
     background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)',
