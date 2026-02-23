@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import {
   getMatches, getOrCreateConversation, getMessages,
   sendMessage, subscribeToMessages, isOnline
@@ -6,25 +6,18 @@ import {
 import { useAuth } from '../lib/AuthContext';
 import { styles, theme } from './styles';
 
-function useIsMobile() {
-  // Use screen.width instead of window.innerWidth so keyboard opening
-  // (which changes window height/width on some browsers) doesn't trigger re-render
-  const [v] = useState(window.screen.width < 768);
-  return v;
-}
+const isMobileDevice = window.screen.width < 768;
 
 export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
   const { profile } = useAuth();
-  const isMobile = useIsMobile();
   const [matches, setMatches] = useState([]);
   const [convId, setConvId] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  // On mobile: 'list' or 'chat'
   const [mobileView, setMobileView] = useState(activeChatPartner ? 'chat' : 'list');
   const bottomRef = useRef(null);
   const channelRef = useRef(null);
+  const inputRef = useRef(null);
 
   useEffect(() => {
     if (profile) getMatches(profile.id).then(setMatches).catch(console.error);
@@ -33,8 +26,8 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
   useEffect(() => {
     if (!profile || !activeChatPartner) return;
     loadConversation();
-    if (isMobile) setMobileView('chat');
-  }, [activeChatPartner]);
+    if (isMobileDevice) setMobileView('chat');
+  }, [activeChatPartner?.id]);
 
   async function loadConversation() {
     setLoading(true); setMessages([]);
@@ -51,25 +44,22 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
     finally { setLoading(false); }
   }
 
-  useEffect(() => {
-    return () => { if (channelRef.current) channelRef.current.unsubscribe(); };
-  }, []);
+  useEffect(() => () => { if (channelRef.current) channelRef.current.unsubscribe(); }, []);
+  useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
 
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
-
-  async function handleSend(e) {
+  const handleSend = useCallback(async (e) => {
     e.preventDefault();
-    if (!input.trim() || !convId) return;
-    const text = input.trim(); setInput('');
+    const text = inputRef.current?.value?.trim();
+    if (!text || !convId) return;
+    inputRef.current.value = '';
+    inputRef.current.focus();
     try { await sendMessage(convId, profile.id, text); }
-    catch (e) { console.error(e); setInput(text); }
-  }
+    catch (err) { console.error(err); }
+  }, [convId, profile?.id]);
 
   function openChat(m) {
     setActiveChatPartner(m);
-    if (isMobile) setMobileView('chat');
+    if (isMobileDevice) setMobileView('chat');
   }
 
   function goBack() {
@@ -77,11 +67,9 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
     setActiveChatPartner(null);
   }
 
-  // ── Contact List ──────────────────────────────────────────────────────────
-  const ContactList = () => (
-    <div style={isMobile ? {
-      flex: 1, overflowY: 'auto', background: 'transparent',
-    } : styles.chatList}>
+  // ── Contact List ─────────────────────────────────────────────────────────
+  const contactList = (
+    <div style={isMobileDevice ? { flex: 1, overflowY: 'auto' } : styles.chatList}>
       <div style={styles.chatListTitle}>Messages</div>
       {matches.length === 0 && (
         <div style={{ padding: '24px 20px', color: theme.textMuted, fontSize: 13, textAlign: 'center', lineHeight: 1.6 }}>
@@ -91,7 +79,7 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
       )}
       {matches.map(m => (
         <div key={m.id}
-          style={activeChatPartner?.id === m.id && !isMobile
+          style={activeChatPartner?.id === m.id && !isMobileDevice
             ? { ...styles.chatListItem, ...styles.chatListItemActive }
             : styles.chatListItem}
           onClick={() => openChat(m)}>
@@ -106,18 +94,16 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
     </div>
   );
 
-  // ── Chat Window ───────────────────────────────────────────────────────────
-  const ChatWindow = () => (
+  // ── Chat Window ──────────────────────────────────────────────────────────
+  const chatWindow = (
     <div style={styles.chatWindow}>
       {activeChatPartner ? (
         <>
           <div style={styles.chatHeader}>
-            {/* Back button on mobile */}
-            {isMobile && (
+            {isMobileDevice && (
               <button onClick={goBack} style={{
                 background: 'none', border: 'none', color: theme.textMuted,
                 fontSize: 22, cursor: 'pointer', marginRight: 8, padding: '0 4px',
-                display: 'flex', alignItems: 'center',
               }}>←</button>
             )}
             <div style={styles.chatHeaderAvatar}>{activeChatPartner.alias?.[0]}</div>
@@ -127,9 +113,7 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
                 {isOnline(activeChatPartner.last_seen) ? '● Online' : '● Offline'}
               </div>
             </div>
-            <div style={{ marginLeft: 'auto', color: theme.textMuted, fontSize: 11 }}>
-              🔒 anonymous
-            </div>
+            <div style={{ marginLeft: 'auto', color: theme.textMuted, fontSize: 11 }}>🔒 anonymous</div>
           </div>
 
           <div style={styles.messagesArea}>
@@ -149,34 +133,37 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
           </div>
 
           <form style={styles.chatInputRow} onSubmit={handleSend}>
-            <input style={styles.chatInput} placeholder="Type a message..."
-              value={input} onChange={e => setInput(e.target.value)} />
-            <button style={styles.sendBtn} type="submit" disabled={!input.trim()}>Send ➤</button>
+            <input
+              ref={inputRef}
+              style={styles.chatInput}
+              placeholder="Type a message..."
+              defaultValue=""
+              autoComplete="off"
+            />
+            <button style={styles.sendBtn} type="submit">Send ➤</button>
           </form>
         </>
       ) : (
-        <div style={{ ...styles.emptyState, flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: theme.textMuted }}>
           <div style={{ fontSize: 48, marginBottom: 16 }}>💬</div>
-          <p style={{ color: theme.textMuted }}>Select a match to start chatting</p>
+          <p>Select a match to start chatting</p>
         </div>
       )}
     </div>
   );
 
-  // ── Mobile: show list OR chat, not both ───────────────────────────────────
-  if (isMobile) {
+  if (isMobileDevice) {
     return (
       <div style={{ height: 'calc(100vh - 126px)', display: 'flex', flexDirection: 'column' }}>
-        {mobileView === 'list' ? <ContactList /> : <ChatWindow />}
+        {mobileView === 'list' ? contactList : chatWindow}
       </div>
     );
   }
 
-  // ── Desktop: side by side ─────────────────────────────────────────────────
   return (
     <div style={styles.chatLayout}>
-      <ContactList />
-      <ChatWindow />
+      {contactList}
+      {chatWindow}
     </div>
   );
 }
