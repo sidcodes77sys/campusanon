@@ -7,12 +7,9 @@ import { useAuth } from '../lib/AuthContext';
 import { styles, theme } from './styles';
 
 function useIsMobile() {
-  const [v, setV] = useState(window.innerWidth < 768);
-  useEffect(() => {
-    const fn = () => setV(window.innerWidth < 768);
-    window.addEventListener('resize', fn);
-    return () => window.removeEventListener('resize', fn);
-  }, []);
+  // Use screen.width instead of window.innerWidth so keyboard opening
+  // (which changes window height/width on some browsers) doesn't trigger re-render
+  const [v] = useState(window.screen.width < 768);
   return v;
 }
 
