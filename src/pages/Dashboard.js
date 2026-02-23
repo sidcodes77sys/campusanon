@@ -3,7 +3,7 @@ import { getDiscoverProfiles, likeProfile, passProfile, isOnline } from '../lib/
 import { useAuth } from '../lib/AuthContext';
 import { styles, theme } from './styles';
 
-const isMobileDevice = window.screen.width < 768;
+const isMobile = window.screen.width < 768;
 
 export default function Dashboard() {
   const { profile } = useAuth();
@@ -49,31 +49,21 @@ export default function Dashboard() {
   const card = cards[current];
 
   return (
-    <div style={{ padding: isMobileDevice ? '24px 16px' : '44px 52px', maxWidth: 980 }}>
-      <h2 style={{ ...styles.pageTitle, fontSize: isMobileDevice ? 22 : 30 }}>
-        <span style={{ color: theme.neon }}>✦</span> Discover
-      </h2>
-      <p style={{ ...styles.pageSubtitle, fontSize: isMobileDevice ? 13 : 14 }}>
-        anonymous profiles · no names · genuine connections
-      </p>
-
+    <div style={styles.pageWrap}>
+      <h2 style={styles.pageTitle}><span style={{ color: theme.neon }}>✦</span> Discover</h2>
+      <p style={styles.pageSubtitle}>anonymous profiles · no names · genuine connections</p>
       {matchNotif && <div style={styles.matchBanner}>⚡ It's a Match!</div>}
 
       {card ? (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: isMobileDevice ? 4 : 12 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 8 }}>
           <div style={{
             ...styles.profileCard,
-            width: isMobileDevice ? '100%' : 380,
-            maxWidth: isMobileDevice ? 400 : 380,
-            padding: isMobileDevice ? '32px 24px' : '44px 40px',
             ...(action === 'liked' ? styles.cardLiked : {}),
             ...(action === 'passed' ? styles.cardPassed : {}),
           }}>
-            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: 'linear-gradient(90deg, transparent, rgba(155,127,232,0.5), transparent)' }} />
-            <div style={{ ...styles.profileAvatar, width: isMobileDevice ? 76 : 96, height: isMobileDevice ? 76 : 96, fontSize: isMobileDevice ? 30 : 40 }}>
-              {card.alias?.[0] || '?'}
-            </div>
-            <div style={{ ...styles.profileAlias, fontSize: isMobileDevice ? 18 : 22 }}>{card.alias}</div>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: 'linear-gradient(90deg, transparent, rgba(232,135,42,0.5), transparent)' }} />
+            <div style={styles.profileAvatar}>{card.alias?.[0] || '?'}</div>
+            <div style={styles.profileAlias}>{card.alias}</div>
             <div style={styles.profileMeta}>
               Age {card.age}&nbsp;·&nbsp;
               {isOnline(card.last_seen)
@@ -85,30 +75,25 @@ export default function Dashboard() {
               {(card.interests || []).map(i => <span key={i} style={styles.interestTag}>{i}</span>)}
             </div>
             <div style={styles.actionRow}>
-              <button style={{ ...styles.passBtn, padding: isMobileDevice ? '11px 28px' : '13px 36px' }} onClick={handlePass} disabled={!!action}>✕ Pass</button>
-              <button style={{ ...styles.likeBtn, padding: isMobileDevice ? '11px 28px' : '13px 36px' }} onClick={handleLike} disabled={!!action}>♥ Like</button>
+              <button style={styles.passBtn} onClick={handlePass} disabled={!!action}>✕ Pass</button>
+              <button style={styles.likeBtn} onClick={handleLike} disabled={!!action}>♥ Like</button>
             </div>
           </div>
           <div style={styles.cardCounter}>{current + 1} of {cards.length} profiles</div>
         </div>
       ) : (
-        /* ── CENTERED EMPTY STATE ── */
         <div style={{
           display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-          minHeight: 'calc(100vh - 280px)', textAlign: 'center', gap: 16,
+          minHeight: 'calc(100vh - 320px)', textAlign: 'center', gap: 16,
         }}>
-          <div style={{ fontSize: 52, color: theme.neon, lineHeight: 1 }}>✦</div>
-          <h3 style={{
-            fontFamily: "'Space Mono', monospace", color: theme.text,
-            fontSize: isMobileDevice ? 16 : 18, letterSpacing: 3, textTransform: 'uppercase',
-          }}>
+          <div style={{ fontSize: 52, color: theme.neon }}>✦</div>
+          <h3 style={{ fontFamily: "'Space Mono',monospace", color: theme.text, fontSize: 18, letterSpacing: 3, textTransform: 'uppercase' }}>
             You've Seen Everyone
           </h3>
           <p style={{ color: theme.textMuted, fontSize: 14, maxWidth: 260, lineHeight: 1.7 }}>
             New profiles appear daily — check back soon
           </p>
-          <button
-            style={{ ...styles.primaryBtn, width: 'auto', padding: '13px 40px', display: 'inline-block', marginTop: 8 }}
+          <button style={{ ...styles.primaryBtn, width: 'auto', padding: '13px 40px', marginTop: 8 }}
             onClick={() => { setCurrent(0); loadProfiles(); }}>
             Refresh Profiles
           </button>
