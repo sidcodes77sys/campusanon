@@ -8,7 +8,7 @@ export default function InfoPage() {
     {
       icon: '🔒',
       title: 'Completely Anonymous',
-      body: 'You are never identified by your real name. Every user gets a randomly generated alias like "Frost_41" or "Ember_66". Your roll number email is only used to verify you\'re a real IIIT Patna student — it\'s never visible to anyone.',
+      body: 'You are never identified by your real name. Every user gets a randomly generated alias like "Frost_41" or "Ember_66". Your roll number email is only used to verify you\'re a real IIIT Pune student — it\'s never visible to anyone.',
     },
     {
       icon: '✦',
@@ -22,8 +22,8 @@ export default function InfoPage() {
     },
     {
       icon: '🎓',
-      title: 'IIIT Patna Only',
-      body: 'CampusAnon is exclusively for IIIT Patna students. Signup requires a valid CSE or ECE roll number email (112515xxx@cse.iiitp.ac.in or 112516xxx@ece.iiitp.ac.in). This keeps the community safe, trusted, and relevant.',
+      title: 'IIIT Pune Only',
+      body: 'CampusAnon is exclusively for IIIT Pune students. Signup requires a valid CSE or ECE roll number email (112515xxx@cse.iiitp.ac.in or 112516xxx@ece.iiitp.ac.in). This keeps the community safe, trusted, and relevant.',
     },
     {
       icon: '🛡️',
@@ -41,7 +41,7 @@ export default function InfoPage() {
     { q: 'Can people find out who I am?', a: 'Not through the app. Your alias is random and your email is never shown. Only you can choose to reveal your identity in chat.' },
     { q: 'What if someone is being inappropriate?', a: 'You can unmatch and block at any time. We\'re also working on a report feature. Misuse of the platform can result in a permanent ban.' },
     { q: 'Is my data stored forever?', a: 'No. You can delete your account at any time from Settings. This permanently removes your profile, matches, and messages.' },
-    { q: 'Why only IIIT Patna?', a: 'Starting small keeps the community tight and trustworthy. Expansion to other colleges is planned based on how this goes.' },
+    { q: 'Why only IIIT Pune?', a: 'Starting small keeps the community tight and trustworthy. Expansion to other colleges is planned based on how this goes.' },
     { q: 'Does it work on mobile?', a: 'Yes — fully mobile responsive with a bottom navigation bar, slide-in menus, and a chat UI optimized for phones.' },
   ];
 
@@ -63,7 +63,7 @@ export default function InfoPage() {
           color: theme.textMuted, fontSize: 'clamp(14px,2vw,17px)', maxWidth: 480,
           margin: '0 auto', lineHeight: 1.8, fontFamily: RC,
         }}>
-          Anonymous dating for IIIT Patna students.<br />
+          Anonymous dating for IIIT Pune students.<br />
           No real names. No pressure. Just genuine connections.
         </p>
         <div style={{
@@ -165,10 +165,10 @@ export default function InfoPage() {
           Built by a student, for students
         </div>
         <div style={{ color: theme.textMuted, fontSize: 13, lineHeight: 1.8, maxWidth: 380, margin: '0 auto', fontFamily: RC }}>
-          CampusAnon is an open project built with love for the IIIT Patna community. Feedback, suggestions, and bug reports are always welcome.
+          CampusAnon is an open project built with love for the IIIT Pune community. Feedback, suggestions, and bug reports are always welcome.
         </div>
         <div style={{ marginTop: 20, color: theme.textDim, fontSize: 11, letterSpacing: 2, fontFamily: RC, textTransform: 'uppercase' }}>
-          Made with <span style={{ color: theme.neon }}>♥</span> for students · IIIT Patna · 2026
+          Made with <span style={{ color: theme.neon }}>♥</span> for students · IIIT Pune · 2026
         </div>
       </div>
     </div>

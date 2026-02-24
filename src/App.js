@@ -31,19 +31,19 @@ function LegalModal({ type, onClose }) {
   const privacy = {
     title: 'Privacy Policy',
     sections: [
-      { heading: 'What We Collect', body: 'We collect your college roll number email address solely to verify you are an IIIT Patna student. We also store your profile preferences (gender, age, interests, bio) and your anonymous alias. We never collect your real name, phone number, or location.' },
+      { heading: 'What We Collect', body: 'We collect your college roll number email address solely to verify you are an IIIT Pune student. We also store your profile preferences (gender, age, interests, bio) and your anonymous alias. We never collect your real name, phone number, or location.' },
       { heading: 'How We Use It', body: 'Your email is used only for authentication. It is never displayed to other users, never sold, and never shared with third parties. Your profile data is used only to show your anonymous profile to potential matches.' },
       { heading: 'Data Storage', body: 'All data is stored securely on Supabase with row-level security policies. Only you can read and edit your own profile. Match and chat data is accessible only to the two matched users.' },
       { heading: 'Cookies & Analytics', body: 'We use no tracking cookies and no third-party analytics. There are no ads, no ad trackers, and no data brokers involved.' },
       { heading: 'Deleting Your Data', body: 'You can permanently delete your account from Settings at any time. This removes your profile, matches, and all messages from our database.' },
-      { heading: 'Contact', body: 'For any privacy concerns, reach out to the developer through IIIT Patna student channels.' },
+      { heading: 'Contact', body: 'For any privacy concerns, reach out to the developer through IIIT Pune student channels.' },
     ],
   };
 
   const terms = {
     title: 'Terms of Use',
     sections: [
-      { heading: 'Eligibility', body: 'CampusAnon is exclusively for current IIIT Patna students. You must have a valid @cse.iiitp.ac.in or @ece.iiitp.ac.in email address to register. Creating fake accounts or sharing access is prohibited.' },
+      { heading: 'Eligibility', body: 'CampusAnon is exclusively for current IIIT Pune students. You must have a valid @cse.iiitp.ac.in or @ece.iiitp.ac.in email address to register. Creating fake accounts or sharing access is prohibited.' },
       { heading: 'Acceptable Use', body: 'You agree to use CampusAnon respectfully and not to harass, threaten, or intimidate other users. Sending unsolicited explicit content, hate speech, or spam will result in immediate and permanent account termination.' },
       { heading: 'Anonymity', body: 'You may choose to remain anonymous indefinitely. However, if you share personal identifying information in chat, you do so at your own risk. The platform cannot be responsible for information you voluntarily disclose.' },
       { heading: 'No Guarantees', body: 'CampusAnon is provided as-is. We do not guarantee matches, message delivery, or uptime. The service may be updated, paused, or discontinued at any time.' },
@@ -102,7 +102,7 @@ function LegalModal({ type, onClose }) {
         </div>
 
         <div style={{ marginTop: 24, textAlign: 'center', color: theme.textDim, fontSize: 11, fontFamily: RC, letterSpacing: 1, textTransform: 'uppercase' }}>
-          CampusAnon · IIIT Patna · 2026
+          CampusAnon · IIIT Pune · 2026
         </div>
       </div>
     </div>
