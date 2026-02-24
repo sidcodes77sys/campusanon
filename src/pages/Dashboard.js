@@ -47,28 +47,11 @@ export default function Dashboard() {
   const card = cards[current];
 
   return (
-    <div style={{
-      width: '100%',
-      minHeight: 'calc(100vh - 60px)',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: card ? 'flex-start' : 'center',
-      padding: 'clamp(32px,5vw,52px) 16px',
-      boxSizing: 'border-box',
-    }}>
-      <div style={{ textAlign: 'center', marginBottom: 28 }}>
-        <h2 style={{ ...styles.pageTitle, justifyContent: 'center', marginBottom: 6 }}>
-          <span style={{ color: theme.neon }}>✦</span> Discover
-        </h2>
-        <p style={{ ...styles.pageSubtitle, marginBottom: 0 }}>
-          anonymous profiles · no names · genuine connections
-        </p>
-      </div>
+    <div style={styles.pageWrap}>
+      <h2 style={styles.pageTitle}><span style={{ color: theme.neon }}>✦</span> Discover</h2>
+      <p style={styles.pageSubtitle}>anonymous profiles · no names · genuine connections</p>
 
-      {matchNotif && (
-        <div style={{ ...styles.matchBanner, maxWidth: 400, marginBottom: 20 }}>⚡ It's a Match!</div>
-      )}
+      {matchNotif && <div style={styles.matchBanner}>⚡ It's a Match!</div>}
 
       {card ? (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
@@ -98,9 +81,9 @@ export default function Dashboard() {
           <div style={styles.cardCounter}>{current + 1} of {cards.length}</div>
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: 16 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: 16, paddingTop: 60 }}>
           <div style={{ fontSize: 48, color: theme.neon, lineHeight: 1 }}>✦</div>
-          <h3 style={{ fontFamily: "'Space Mono',monospace", color: theme.text, fontSize: 'clamp(13px,2vw,17px)', letterSpacing: 3, textTransform: 'uppercase', margin: 0 }}>
+          <h3 style={{ fontFamily: "'Space Mono',monospace", color: theme.text, fontSize: 17, letterSpacing: 3, textTransform: 'uppercase', margin: 0 }}>
             You've Seen Everyone
           </h3>
           <p style={{ color: theme.textMuted, fontSize: 13, maxWidth: 240, lineHeight: 1.7, margin: 0 }}>

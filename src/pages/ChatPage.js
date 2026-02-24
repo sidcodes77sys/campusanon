@@ -38,6 +38,14 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
       setMessages(msgs);
       if (channelRef.current) channelRef.current.unsubscribe();
       channelRef.current = subscribeToMessages(id, (newMsg) => {
+        // Browser notification when tab is hidden
+        if (newMsg.sender_id !== profile.id && document.hidden && Notification.permission === 'granted') {
+          new Notification("New message on CampusAnon", {
+            body: "You have a new message from your match",
+            icon: "/favicon.ico",
+            tag: "campusanon-msg",
+          });
+        }
         setMessages(prev => [...prev, newMsg]);
       });
     } catch (e) { console.error(e); }

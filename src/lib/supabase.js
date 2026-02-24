@@ -230,3 +230,15 @@ export function generateAlias() {
   const words = ['Comet','Blaze','Frost','Storm','Ember','Drift','Sage','Echo','Flux','Gale','Prism','Zenith','Nova','Lyric','Crest'];
   return words[Math.floor(Math.random() * words.length)] + '_' + Math.floor(Math.random() * 90 + 10);
 }
+
+// ─── Delete Account ───────────────────────────────────────────────────────────
+export async function deleteAccount(userId) {
+  // Delete all user data — cascade handles likes, matches, conversations, messages
+  const { error } = await supabase
+    .from('profiles')
+    .delete()
+    .eq('id', userId);
+  if (error) throw error;
+  // Sign out after data deletion
+  await supabase.auth.signOut();
+}
