@@ -156,12 +156,12 @@ export async function getMatches(userId) {
 // ─── Stats ────────────────────────────────────────────────────────────────────
 
 export async function getUserStats(userId) {
-  const [{ count: likes }, { count: matches }, { data: convs }] = await Promise.all([
+  const [{ count: likes }, { count: matches }, { count: chatsCount }] = await Promise.all([
     supabase.from('likes').select('*', { count: 'exact', head: true }).eq('user_id', userId).eq('is_pass', false),
     supabase.from('matches').select('*', { count: 'exact', head: true }).eq('user_id', userId),
-    supabase.from('conversations').select('id').or(`user_a.eq.${userId},user_b.eq.${userId}`),
+    supabase.from('matches').select('*', { count: 'exact', head: true }).or(`user_id.eq.${userId},matched_user_id.eq.${userId}`),
   ]);
-  return { likes: likes || 0, matches: matches || 0, chats: (convs || []).length };
+  return { likes: likes || 0, matches: matches || 0, chats: chatsCount || 0 };
 }
 
 // ─── Chat ─────────────────────────────────────────────────────────────────────

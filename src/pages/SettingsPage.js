@@ -10,6 +10,7 @@ export default function SettingsPage() {
   const [ageMin, setAgeMin] = useState(18);
   const [ageMax, setAgeMax] = useState(25);
   const [loggingOut, setLoggingOut] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   async function handleLogout() {
     setLoggingOut(true);
@@ -18,29 +19,27 @@ export default function SettingsPage() {
   }
 
   async function handleDeleteAccount() {
-    const confirmed = window.confirm('Are you sure? This cannot be undone. Your profile and matches will be permanently deleted.');
-    if (!confirmed) return;
+    if (!confirmDelete) { setConfirmDelete(true); return; }
     try {
-      // Mark as deleted — real deletion would require a server-side function
       await updateProfile(profile.id, { deleted: true });
       await signOut();
-    } catch (e) {
-      console.error(e);
-    }
+    } catch (e) { console.error(e); }
   }
 
   return (
     <div style={styles.pageWrap}>
-      <h2 style={styles.pageTitle}>Settings ⚙️</h2>
-      <div style={styles.settingsCard}>
+      <h2 style={styles.pageTitle}><span style={{ color: theme.neon }}>✦</span> Settings</h2>
+      <p style={styles.pageSubtitle}>manage your preferences and account</p>
+      <div style={{ ...styles.settingsCard, maxWidth: 500 }}>
 
+        {/* Toggle rows */}
         <div style={styles.settingRow}>
           <div>
             <div style={styles.settingLabel}>Push Notifications</div>
             <div style={styles.settingDesc}>Get notified for new matches and messages</div>
           </div>
           <div style={notifications ? styles.toggleOn : styles.toggleOff} onClick={() => setNotifications(!notifications)}>
-            <div style={{...styles.toggleKnob, right: notifications ? 3 : 'auto', left: notifications ? 'auto' : 3}} />
+            <div style={{ ...styles.toggleKnob, right: notifications ? 3 : 'auto', left: notifications ? 'auto' : 3 }} />
           </div>
         </div>
 
@@ -50,38 +49,79 @@ export default function SettingsPage() {
             <div style={styles.settingDesc}>Let matches see when you're active</div>
           </div>
           <div style={showOnline ? styles.toggleOn : styles.toggleOff} onClick={() => setShowOnline(!showOnline)}>
-            <div style={{...styles.toggleKnob, right: showOnline ? 3 : 'auto', left: showOnline ? 'auto' : 3}} />
+            <div style={{ ...styles.toggleKnob, right: showOnline ? 3 : 'auto', left: showOnline ? 'auto' : 3 }} />
           </div>
         </div>
 
-        <hr style={styles.sidebarDivider} />
-
-        <div style={styles.settingLabel}>Age Range Preference</div>
-        <div style={{display:'flex', gap:12, alignItems:'center', marginTop:8, marginBottom:16}}>
-          <label style={{fontSize:14}}>Min:
-            <input type="number" style={{...styles.input, width:64, margin:'0 0 0 6px', display:'inline-block', padding:'6px 8px'}}
-              value={ageMin} min={18} max={ageMax} onChange={e => setAgeMin(Number(e.target.value))} />
-          </label>
-          <label style={{fontSize:14}}>Max:
-            <input type="number" style={{...styles.input, width:64, margin:'0 0 0 6px', display:'inline-block', padding:'6px 8px'}}
-              value={ageMax} min={ageMin} max={35} onChange={e => setAgeMax(Number(e.target.value))} />
-          </label>
+        {/* Age range */}
+        <div style={{ padding: '18px 0', borderBottom: `1px solid rgba(77,159,255,0.07)` }}>
+          <div style={styles.settingLabel}>Age Range Preference</div>
+          <div style={{ display: 'flex', gap: 16, alignItems: 'center', marginTop: 12 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ color: theme.textMuted, fontSize: 13 }}>Min</span>
+              <input type="number" style={{ ...styles.input, width: 72, margin: 0, padding: '8px 12px' }}
+                value={ageMin} min={18} max={ageMax} onChange={e => setAgeMin(Number(e.target.value))} />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ color: theme.textMuted, fontSize: 13 }}>Max</span>
+              <input type="number" style={{ ...styles.input, width: 72, margin: 0, padding: '8px 12px' }}
+                value={ageMax} min={ageMin} max={35} onChange={e => setAgeMax(Number(e.target.value))} />
+            </div>
+          </div>
         </div>
 
-        <hr style={styles.sidebarDivider} />
+        {/* Account section */}
+        <div style={{ padding: '20px 0 8px' }}>
+          <div style={styles.settingLabel}>Account</div>
+          <div style={{ color: theme.textMuted, fontSize: 13, marginBottom: 20, fontFamily: "'Space Mono',monospace" }}>
+            {profile?.email}
+          </div>
 
-        <div style={styles.settingLabel}>Account</div>
-        <div style={{color:'#555', fontSize:13, marginBottom:12}}>{profile?.email}</div>
+          {/* Logout button — styled nicely */}
+          <button
+            onClick={handleLogout}
+            disabled={loggingOut}
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+              width: '100%', padding: '13px',
+              background: 'rgba(77,159,255,0.08)',
+              border: '1px solid rgba(77,159,255,0.25)',
+              borderRadius: 12, cursor: 'pointer',
+              color: theme.neon, fontSize: 14, fontWeight: 700,
+              fontFamily: "'Roboto Condensed',sans-serif",
+              letterSpacing: 2, textTransform: 'uppercase',
+              marginBottom: 10, transition: 'all 0.2s',
+            }}>
+            <span style={{ fontSize: 16 }}>→</span>
+            {loggingOut ? 'Logging out...' : 'Logout'}
+          </button>
 
-        <button style={{...styles.secondaryBtn, color:'#e74c3c', borderColor:'#e74c3c'}} onClick={handleLogout} disabled={loggingOut}>
-          🚪 {loggingOut ? 'Logging out...' : 'Logout'}
-        </button>
-        <button style={{...styles.secondaryBtn, color:'#aaa', borderColor:'#ddd', marginTop:8}} onClick={handleDeleteAccount}>
-          🗑️ Delete Account
-        </button>
+          {/* Delete button */}
+          <button
+            onClick={handleDeleteAccount}
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+              width: '100%', padding: '13px',
+              background: confirmDelete ? 'rgba(255,107,138,0.12)' : 'rgba(255,255,255,0.03)',
+              border: `1px solid ${confirmDelete ? 'rgba(255,107,138,0.4)' : 'rgba(255,255,255,0.08)'}`,
+              borderRadius: 12, cursor: 'pointer',
+              color: confirmDelete ? theme.error : theme.textMuted,
+              fontSize: 14, fontWeight: 700,
+              fontFamily: "'Roboto Condensed',sans-serif",
+              letterSpacing: 2, textTransform: 'uppercase',
+              transition: 'all 0.2s',
+            }}>
+            <span style={{ fontSize: 16 }}>✕</span>
+            {confirmDelete ? 'Tap again to confirm' : 'Delete Account'}
+          </button>
+        </div>
 
-        <hr style={styles.sidebarDivider} />
-        <div style={{fontSize:12, color:'#bbb'}}>
+        <div style={{
+          marginTop: 16, padding: '14px 16px',
+          background: 'rgba(77,159,255,0.05)',
+          border: '1px solid rgba(77,159,255,0.1)',
+          borderRadius: 10, fontSize: 12, color: theme.textMuted, lineHeight: 1.6,
+        }}>
           🔒 Your identity is always protected. We never share your email or personal information.
         </div>
       </div>
