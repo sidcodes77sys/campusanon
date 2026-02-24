@@ -67,9 +67,12 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
     setActiveChatPartner(null);
   }
 
-  // ── Contact List ─────────────────────────────────────────────────────────
+  // ── Contact List ──────────────────────────────────────────────────────────
   const contactList = (
-    <div style={isMobileDevice ? { flex: 1, overflowY: 'auto' } : styles.chatList}>
+    <div style={isMobileDevice
+      ? { flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch' }
+      : styles.chatList
+    }>
       <div style={styles.chatListTitle}>Messages</div>
       {matches.length === 0 && (
         <div style={{ padding: '24px 20px', color: theme.textMuted, fontSize: 13, textAlign: 'center', lineHeight: 1.6 }}>
@@ -94,16 +97,31 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
     </div>
   );
 
-  // ── Chat Window ──────────────────────────────────────────────────────────
+  // ── Chat Window ───────────────────────────────────────────────────────────
+  // Key fix: chatWindow must be a flex column with minHeight:0 so messagesArea
+  // can shrink and scroll independently — NOT the whole page
   const chatWindow = (
-    <div style={styles.chatWindow}>
+    <div style={{
+      ...styles.chatWindow,
+      // These are critical for mobile scroll to work:
+      flex: 1,
+      minHeight: 0,
+      display: 'flex',
+      flexDirection: 'column',
+      overflow: 'hidden', // container does NOT scroll
+    }}>
       {activeChatPartner ? (
         <>
-          <div style={styles.chatHeader}>
+          {/* Sticky header — always visible */}
+          <div style={{
+            ...styles.chatHeader,
+            flexShrink: 0, // never shrink, always stays at top
+          }}>
             {isMobileDevice && (
               <button onClick={goBack} style={{
                 background: 'none', border: 'none', color: theme.textMuted,
                 fontSize: 22, cursor: 'pointer', marginRight: 8, padding: '0 4px',
+                flexShrink: 0,
               }}>←</button>
             )}
             <div style={styles.chatHeaderAvatar}>{activeChatPartner.alias?.[0]}</div>
@@ -116,7 +134,17 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
             <div style={{ marginLeft: 'auto', color: theme.textMuted, fontSize: 11 }}>🔒 anonymous</div>
           </div>
 
-          <div style={styles.messagesArea}>
+          {/* Messages — ONLY this div scrolls */}
+          <div style={{
+            flex: 1,
+            minHeight: 0,        // ← critical: without this, flex child won't shrink
+            overflowY: 'auto',   // ← only this scrolls
+            WebkitOverflowScrolling: 'touch', // smooth iOS scroll
+            padding: '20px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 12,
+          }}>
             {loading && <div style={{ textAlign: 'center', color: theme.textMuted, padding: 20 }}>Loading...</div>}
             {messages.map((msg) => {
               const isMe = msg.sender_id === profile.id;
@@ -132,7 +160,8 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
             <div ref={bottomRef} />
           </div>
 
-          <form style={styles.chatInputRow} onSubmit={handleSend}>
+          {/* Input row — always pinned at bottom */}
+          <form style={{ ...styles.chatInputRow, flexShrink: 0 }} onSubmit={handleSend}>
             <input
               ref={inputRef}
               style={styles.chatInput}
@@ -144,7 +173,7 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
           </form>
         </>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: theme.textMuted }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1, color: theme.textMuted }}>
           <div style={{ fontSize: 48, marginBottom: 16 }}>💬</div>
           <p>Select a match to start chatting</p>
         </div>
@@ -152,14 +181,25 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
     </div>
   );
 
+  // ── Mobile layout ─────────────────────────────────────────────────────────
   if (isMobileDevice) {
+    const headerH = 60;  // header height
+    const navH = 62;     // bottom nav height
+    const availH = `calc(100vh - ${headerH}px - ${navH}px)`;
+
     return (
-      <div style={{ height: 'calc(100vh - 62px - 64px)', display: 'flex', flexDirection: 'column', overflow: 'hidden', position: 'relative' }}>
+      <div style={{
+        height: availH,
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden', // page itself never scrolls
+      }}>
         {mobileView === 'list' ? contactList : chatWindow}
       </div>
     );
   }
 
+  // ── Desktop layout ────────────────────────────────────────────────────────
   return (
     <div style={styles.chatLayout}>
       {contactList}
