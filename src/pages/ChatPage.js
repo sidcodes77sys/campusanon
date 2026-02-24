@@ -154,7 +154,7 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
 
   if (isMobileDevice) {
     return (
-      <div style={{ height: 'calc(100vh - 62px - 64px)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      <div style={{ height: 'calc(100vh - 62px - 64px)', display: 'flex', flexDirection: 'column', overflow: 'hidden', position: 'relative' }}>
         {mobileView === 'list' ? contactList : chatWindow}
       </div>
     );

@@ -293,7 +293,7 @@ export const styles = {
   chatHeaderName: { fontWeight: 700, fontSize: 15, fontFamily: mono, color: theme.text, letterSpacing: 1 },
   chatHeaderStatus: { fontSize: 11, color: theme.textMuted, marginTop: 2 },
   messagesArea: {
-    flex: 1, overflowY: 'auto', padding: '24px',
+    flex: 1, minHeight: 0, overflowY: 'auto', padding: '24px', WebkitOverflowScrolling: 'touch',
     display: 'flex', flexDirection: 'column', gap: 12,
   },
   msgWrapMe:   { display: 'flex', flexDirection: 'column', alignItems: 'flex-end' },
