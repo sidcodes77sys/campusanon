@@ -30,7 +30,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div style={styles.page}>
+    <div style={styles.pageWrap}>
       <h2 style={styles.pageTitle}>Settings ⚙️</h2>
       <div style={styles.settingsCard}>
 

@@ -27,7 +27,7 @@ export default function MatchesPage({ setCurrentPage, setActiveChatPartner }) {
   if (loading) return <div style={styles.loadingWrap}>Loading matches...</div>;
 
   return (
-    <div style={styles.page}>
+    <div style={styles.pageWrap}>
       <h2 style={styles.pageTitle}>My Matches 💞</h2>
       <p style={styles.pageSubtitle}>These people liked you back. Start a conversation!</p>
       {matches.length === 0 ? (
