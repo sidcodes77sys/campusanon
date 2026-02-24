@@ -5,36 +5,43 @@ import { styles, theme } from './styles';
 
 export default function SettingsPage() {
   const { profile } = useAuth();
-  const [notifications, setNotifications] = useState(false);
   const [showOnline, setShowOnline] = useState(true);
   const [ageMin, setAgeMin] = useState(18);
   const [ageMax, setAgeMax] = useState(25);
   const [loggingOut, setLoggingOut] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const [notifStatus, setNotifStatus] = useState(''); // 'granted'|'denied'|'unsupported'
+  const [notifPerm, setNotifPerm] = useState('default');
 
-  // Check notification permission on load
   useEffect(() => {
-    if (!('Notification' in window)) {
-      setNotifStatus('unsupported');
-    } else {
-      setNotifStatus(Notification.permission);
-      setNotifications(Notification.permission === 'granted');
-    }
+    if ('Notification' in window) setNotifPerm(Notification.permission);
   }, []);
 
-  async function handleNotifToggle() {
-    if (!('Notification' in window)) return;
-    if (Notification.permission === 'granted') {
-      // Can't revoke programmatically — tell user
-      setNotifications(false);
-      setNotifStatus('user must revoke in browser settings');
+  // This MUST be called directly from a button onClick — no async wrapper above it
+  function handleEnableNotifications() {
+    if (!('Notification' in window)) {
+      alert('Your browser does not support notifications.');
       return;
     }
-    const perm = await Notification.requestPermission();
-    setNotifStatus(perm);
-    setNotifications(perm === 'granted');
+    if (Notification.permission === 'granted') {
+      alert('Notifications are already enabled! To disable, go to your browser site settings.');
+      return;
+    }
+    if (Notification.permission === 'denied') {
+      alert('Notifications are blocked. Please go to your browser site settings → this site → allow notifications.');
+      return;
+    }
+    // 'default' — safe to request. Must be called directly in onClick, not in a timeout/async wrapper
+    Notification.requestPermission().then(perm => {
+      setNotifPerm(perm);
+      if (perm === 'granted') {
+        // Fire a test notification so user sees it worked
+        new Notification('CampusAnon Notifications Enabled ✓', {
+          body: "You'll now get notified when you receive new messages.",
+          icon: '/favicon.ico',
+        });
+      }
+    });
   }
 
   async function handleLogout() {
@@ -56,6 +63,18 @@ export default function SettingsPage() {
     }
   }
 
+  const notifLabel = {
+    granted: '✓ Enabled',
+    denied:  '✕ Blocked in browser',
+    default: 'Click to enable',
+  }[notifPerm] || 'Click to enable';
+
+  const notifDesc = {
+    granted: "You'll be notified when new messages arrive while the tab is in the background.",
+    denied:  'Notifications are blocked. Go to browser site settings → this site → allow notifications.',
+    default: "Get a browser pop-up when you receive new messages while the tab is hidden.",
+  }[notifPerm] || '';
+
   const btnBase = {
     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
     width: '100%', padding: '13px', borderRadius: 12, cursor: 'pointer',
@@ -69,25 +88,29 @@ export default function SettingsPage() {
     <div style={styles.pageWrap}>
       <h2 style={styles.pageTitle}><span style={{ color: theme.neon }}>✦</span> Settings</h2>
       <p style={styles.pageSubtitle}>manage your preferences and account</p>
+
       <div style={{ ...styles.settingsCard, maxWidth: 500 }}>
 
-        {/* Notifications */}
-        <div style={styles.settingRow}>
+        {/* Notifications — plain button, triggers browser prompt directly */}
+        <div style={{ ...styles.settingRow, alignItems: 'flex-start', gap: 16 }}>
           <div style={{ flex: 1 }}>
-            <div style={styles.settingLabel}>Push Notifications</div>
-            <div style={styles.settingDesc}>
-              {notifStatus === 'unsupported' && 'Not supported in this browser'}
-              {notifStatus === 'granted' && 'Enabled — you\'ll be notified of new messages'}
-              {notifStatus === 'denied' && 'Blocked — enable in your browser site settings'}
-              {notifStatus === 'default' && 'Click to enable browser notifications'}
-              {notifStatus === '' && 'Get notified for new matches and messages'}
-            </div>
+            <div style={styles.settingLabel}>Message Notifications</div>
+            <div style={{ ...styles.settingDesc, marginTop: 4 }}>{notifDesc}</div>
           </div>
-          <div
-            style={notifications ? styles.toggleOn : styles.toggleOff}
-            onClick={notifStatus !== 'unsupported' ? handleNotifToggle : undefined}>
-            <div style={{ ...styles.toggleKnob, right: notifications ? 3 : 'auto', left: notifications ? 'auto' : 3 }} />
-          </div>
+          <button
+            onClick={handleEnableNotifications}
+            style={{
+              flexShrink: 0,
+              padding: '8px 16px',
+              borderRadius: 8,
+              border: `1px solid ${notifPerm === 'granted' ? 'rgba(77,255,180,0.3)' : notifPerm === 'denied' ? 'rgba(255,107,138,0.3)' : 'rgba(77,159,255,0.3)'}`,
+              background: notifPerm === 'granted' ? 'rgba(77,255,180,0.08)' : notifPerm === 'denied' ? 'rgba(255,107,138,0.08)' : 'rgba(77,159,255,0.08)',
+              color: notifPerm === 'granted' ? theme.success : notifPerm === 'denied' ? theme.error : theme.neon,
+              fontSize: 12, fontWeight: 700, cursor: 'pointer',
+              fontFamily: "'Roboto Condensed',sans-serif", letterSpacing: 1,
+            }}>
+            {notifLabel}
+          </button>
         </div>
 
         {/* Show online */}
@@ -126,10 +149,8 @@ export default function SettingsPage() {
           </div>
 
           <button onClick={handleLogout} disabled={loggingOut} style={{
-            ...btnBase,
-            background: 'rgba(77,159,255,0.08)',
-            border: '1px solid rgba(77,159,255,0.25)',
-            color: theme.neon, marginBottom: 10,
+            ...btnBase, background: 'rgba(77,159,255,0.08)',
+            border: '1px solid rgba(77,159,255,0.25)', color: theme.neon, marginBottom: 10,
           }}>
             <span style={{ fontSize: 16 }}>→</span>
             {loggingOut ? 'Logging out...' : 'Logout'}
@@ -141,13 +162,13 @@ export default function SettingsPage() {
             border: `1px solid ${confirmDelete ? 'rgba(255,107,138,0.4)' : 'rgba(255,255,255,0.08)'}`,
             color: confirmDelete ? theme.error : theme.textMuted,
           }}>
-            <span style={{ fontSize: 16 }}>✕</span>
-            {deleting ? 'Deleting...' : confirmDelete ? '⚠ Tap again — this is permanent' : 'Delete Account'}
+            <span>✕</span>
+            {deleting ? 'Deleting everything...' : confirmDelete ? '⚠ Tap again — permanent' : 'Delete Account'}
           </button>
 
           {confirmDelete && !deleting && (
-            <div style={{ marginTop: 10, fontSize: 12, color: theme.error, textAlign: 'center', fontFamily: "'Roboto Condensed',sans-serif" }}>
-              This permanently deletes your profile, matches & messages.
+            <div style={{ marginTop: 10, fontSize: 12, color: theme.error, textAlign: 'center' }}>
+              Permanently deletes your profile, matches &amp; all messages.
             </div>
           )}
         </div>

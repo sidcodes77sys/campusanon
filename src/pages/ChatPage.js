@@ -8,6 +8,10 @@ import { styles, theme } from './styles';
 
 const isMobileDevice = window.screen.width < 768;
 
+// Heights in px
+const HEADER_H = 60;
+const BOTTOM_NAV_H = 62;
+
 export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
   const { profile } = useAuth();
   const [matches, setMatches] = useState([]);
@@ -38,12 +42,11 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
       setMessages(msgs);
       if (channelRef.current) channelRef.current.unsubscribe();
       channelRef.current = subscribeToMessages(id, (newMsg) => {
-        // Browser notification when tab is hidden
         if (newMsg.sender_id !== profile.id && document.hidden && Notification.permission === 'granted') {
-          new Notification("New message on CampusAnon", {
-            body: "You have a new message from your match",
-            icon: "/favicon.ico",
-            tag: "campusanon-msg",
+          new Notification('CampusAnon — New Message', {
+            body: 'You have a new message from your match',
+            icon: '/favicon.ico',
+            tag: 'campusanon-msg',
           });
         }
         setMessages(prev => [...prev, newMsg]);
@@ -65,21 +68,24 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
     catch (err) { console.error(err); }
   }, [convId, profile?.id]);
 
-  function openChat(m) {
-    setActiveChatPartner(m);
-    if (isMobileDevice) setMobileView('chat');
-  }
+  function openChat(m) { setActiveChatPartner(m); if (isMobileDevice) setMobileView('chat'); }
+  function goBack() { setMobileView('list'); setActiveChatPartner(null); }
 
-  function goBack() {
-    setMobileView('list');
-    setActiveChatPartner(null);
-  }
-
+  // ── Contact list ────────────────────────────────────────────────────────
   const contactList = (
-    <div style={styles.chatList}>
+    <div style={{
+      ...styles.chatList,
+      // On mobile: fill full available height and scroll within
+      ...(isMobileDevice ? {
+        width: '100%',
+        height: '100%',
+        overflowY: 'auto',
+        WebkitOverflowScrolling: 'touch',
+      } : {}),
+    }}>
       <div style={styles.chatListTitle}>Messages</div>
       {matches.length === 0 && (
-        <div style={{ padding: '24px 20px', color: theme.textMuted, fontSize: 13, textAlign: 'center', lineHeight: 1.6 }}>
+        <div style={{ padding: '32px 20px', color: theme.textMuted, fontSize: 13, textAlign: 'center', lineHeight: 1.8 }}>
           No matches yet<br/>
           <span style={{ fontSize: 11 }}>Like someone to start chatting</span>
         </div>
@@ -101,11 +107,20 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
     </div>
   );
 
+  // ── Chat window ─────────────────────────────────────────────────────────
+  // The secret: chatWindow itself is a flex column with fixed height.
+  // Only messagesArea (flex:1, minHeight:0, overflowY:auto) scrolls.
   const chatWindow = (
-    <div style={styles.chatWindow}>
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%',      // fill whatever parent gives
+      overflow: 'hidden',  // nothing escapes
+    }}>
       {activeChatPartner ? (
         <>
-          <div style={styles.chatHeader}>
+          {/* Header — fixed, never scrolls */}
+          <div style={{ ...styles.chatHeader, flexShrink: 0 }}>
             {isMobileDevice && (
               <button onClick={goBack} style={{
                 background: 'none', border: 'none', color: theme.textMuted,
@@ -122,7 +137,17 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
             <div style={{ marginLeft: 'auto', color: theme.textMuted, fontSize: 11 }}>🔒 anonymous</div>
           </div>
 
-          <div style={styles.messagesArea}>
+          {/* Messages — THE ONLY scrollable area */}
+          <div style={{
+            flex: 1,
+            minHeight: 0,                        // critical for flex scroll
+            overflowY: 'auto',
+            WebkitOverflowScrolling: 'touch',    // smooth iOS momentum
+            padding: '20px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 12,
+          }}>
             {loading && <div style={{ textAlign: 'center', color: theme.textMuted, padding: 20 }}>Loading...</div>}
             {messages.map((msg) => {
               const isMe = msg.sender_id === profile.id;
@@ -138,13 +163,14 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
             <div ref={bottomRef} />
           </div>
 
-          <form style={styles.chatInputRow} onSubmit={handleSend}>
+          {/* Input — fixed at bottom, never scrolls */}
+          <form style={{ ...styles.chatInputRow, flexShrink: 0 }} onSubmit={handleSend}>
             <input ref={inputRef} style={styles.chatInput} placeholder="Type a message..." defaultValue="" autoComplete="off" />
             <button style={styles.sendBtn} type="submit">Send ➤</button>
           </form>
         </>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: theme.textMuted }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1, color: theme.textMuted }}>
           <div style={{ fontSize: 48, marginBottom: 16 }}>💬</div>
           <p>Select a match to start chatting</p>
         </div>
@@ -152,14 +178,17 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
     </div>
   );
 
+  // ── Mobile: exact viewport height minus header + bottom nav ─────────────
   if (isMobileDevice) {
+    const h = `calc(100vh - ${HEADER_H}px - ${BOTTOM_NAV_H}px)`;
     return (
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <div style={{ height: h, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         {mobileView === 'list' ? contactList : chatWindow}
       </div>
     );
   }
 
+  // ── Desktop side-by-side ────────────────────────────────────────────────
   return (
     <div style={styles.chatLayout}>
       {contactList}
