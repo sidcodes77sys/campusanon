@@ -39,7 +39,8 @@ export default function Dashboard() {
 
   if (loading) return (
     <div style={styles.loadingWrap}>
-      <span style={{ color: theme.neon }}>▋</span> loading profiles...
+      <span style={{ color: theme.neon, fontSize: 20 }}>✦</span>
+      Loading Profiles...
     </div>
   );
 
@@ -47,13 +48,9 @@ export default function Dashboard() {
 
   return (
     <div style={styles.pageWrap}>
-      {/* Header */}
-      <h2 style={styles.pageTitle}>
-        <span style={{ color: theme.neon }}>$</span> discover
-      </h2>
-      <p style={styles.pageSubtitle}>// anonymous profiles · no names · genuine connections</p>
-
-      {matchNotif && <div style={styles.matchBanner}>⚡ IT'S A MATCH!</div>}
+      <h2 style={styles.pageTitle}><span style={{ color: theme.neon }}>✦</span> Discover</h2>
+      <p style={styles.pageSubtitle}>anonymous profiles · no names · genuine connections</p>
+      {matchNotif && <div style={styles.matchBanner}>⚡ It's a Match!</div>}
 
       {card ? (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
@@ -62,27 +59,25 @@ export default function Dashboard() {
             ...(action === 'liked' ? styles.cardLiked : {}),
             ...(action === 'passed' ? styles.cardPassed : {}),
           }}>
-            {/* top green line */}
-            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: 'linear-gradient(90deg, transparent, rgba(0,255,136,0.6), transparent)' }} />
-
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: 'linear-gradient(90deg, transparent, rgba(77,159,255,0.6), transparent)' }} />
             <div style={styles.profileAvatar}>{card.alias?.[0] || '?'}</div>
             <div style={styles.profileAlias}>{card.alias}</div>
             <div style={styles.profileMeta}>
-              age_{card.age} &nbsp;·&nbsp;
+              Age {card.age}&nbsp;·&nbsp;
               {isOnline(card.last_seen)
-                ? <span style={{ color: theme.success }}>online</span>
-                : <span style={{ color: theme.textDim }}>offline</span>}
+                ? <span style={{ color: theme.success }}>● Online</span>
+                : <span style={{ color: theme.textDim }}>● Offline</span>}
             </div>
-            {card.bio && <p style={styles.profileBio}>// {card.bio}</p>}
+            {card.bio && <p style={styles.profileBio}>"{card.bio}"</p>}
             <div style={styles.interestRow}>
-              {(card.interests || []).map(i => <span key={i} style={styles.interestTag}>#{i}</span>)}
+              {(card.interests || []).map(i => <span key={i} style={styles.interestTag}>{i}</span>)}
             </div>
             <div style={styles.actionRow}>
-              <button style={styles.passBtn} onClick={handlePass} disabled={!!action}>✕ pass</button>
-              <button style={styles.likeBtn} onClick={handleLike} disabled={!!action}>♥ like</button>
+              <button style={styles.passBtn} onClick={handlePass} disabled={!!action}>✕ Pass</button>
+              <button style={styles.likeBtn} onClick={handleLike} disabled={!!action}>♥ Like</button>
             </div>
           </div>
-          <div style={styles.cardCounter}>{current + 1} / {cards.length}</div>
+          <div style={styles.cardCounter}>{current + 1} of {cards.length}</div>
         </div>
       ) : (
         <div style={{
@@ -90,16 +85,16 @@ export default function Dashboard() {
           justifyContent: 'center', minHeight: 'calc(100vh - 320px)',
           textAlign: 'center', gap: 16,
         }}>
-          <div style={{ fontSize: 36, color: theme.neon, fontFamily: "'Space Mono',monospace" }}>[ ]</div>
-          <div style={{ color: theme.neon, fontFamily: "'Space Mono',monospace", fontSize: 14, letterSpacing: 3 }}>
-            queue_empty
-          </div>
-          <p style={{ color: theme.textMuted, fontSize: 12, maxWidth: 260, lineHeight: 1.8, fontFamily: "'Space Mono',monospace" }}>
-            // new profiles appear daily<br/>-- check back soon
+          <div style={{ fontSize: 48, color: theme.neon }}>✦</div>
+          <h3 style={{ fontFamily: "'Space Mono',monospace", color: theme.text, fontSize: 17, letterSpacing: 3, textTransform: 'uppercase' }}>
+            You've Seen Everyone
+          </h3>
+          <p style={{ color: theme.textMuted, fontSize: 14, maxWidth: 260, lineHeight: 1.7 }}>
+            New profiles appear daily — check back soon
           </p>
-          <button style={{ ...styles.primaryBtn, width: 'auto', padding: '12px 36px', marginTop: 8 }}
+          <button style={{ ...styles.primaryBtn, width: 'auto', padding: '13px 40px', marginTop: 8 }}
             onClick={() => { setCurrent(0); loadProfiles(); }}>
-            refresh()
+            Refresh Profiles
           </button>
         </div>
       )}

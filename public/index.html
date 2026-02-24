@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <meta name="theme-color" content="#000800"/>
+  <meta name="theme-color" content="#020818"/>
   <meta name="description" content="CampusAnon - Anonymous Dating for IIIT Patna"/>
   <link rel="icon" href="%PUBLIC_URL%/favicon.ico"/>
   <link rel="apple-touch-icon" href="%PUBLIC_URL%/favicon-180.png"/>
@@ -16,22 +16,37 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background: #000800;
-      color: #e0ffe8;
-      font-family: 'Space Mono', monospace;
+      background: #020818;
+      color: #e8f4ff;
+      font-family: 'Roboto Condensed', sans-serif;
       min-height: 100vh;
       overflow-x: hidden;
     }
 
-    /* Matrix-style green glow */
+    /* Deep midnight blue nebula — multiple layered glows */
     body::before {
       content: '';
       position: fixed;
       inset: 0;
       background:
-        radial-gradient(ellipse 60% 50% at 20% 20%, rgba(0,255,136,0.07) 0%, transparent 65%),
-        radial-gradient(ellipse 50% 60% at 80% 80%, rgba(0,200,80,0.05) 0%, transparent 65%),
-        radial-gradient(ellipse 40% 40% at 50% 50%, rgba(0,255,136,0.025) 0%, transparent 60%);
+        radial-gradient(ellipse 70% 55% at 15% 20%, rgba(30,80,200,0.18) 0%, transparent 65%),
+        radial-gradient(ellipse 60% 70% at 85% 80%, rgba(20,60,180,0.14) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 40% at 60% 10%, rgba(77,159,255,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 50% at 30% 80%, rgba(40,100,220,0.07) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Subtle star-like noise */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px),
+        radial-gradient(circle, rgba(77,159,255,0.06) 1px, transparent 1px);
+      background-size: 80px 80px, 120px 120px;
+      background-position: 0 0, 40px 40px;
       pointer-events: none;
       z-index: 0;
     }
@@ -40,36 +55,20 @@
 
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(0,255,136,0.2); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb { background: rgba(77,159,255,0.2); border-radius: 3px; }
 
     input:focus {
-      border-color: rgba(0,255,136,0.5) !important;
-      box-shadow: 0 0 0 3px rgba(0,255,136,0.08) !important;
+      border-color: rgba(77,159,255,0.5) !important;
+      box-shadow: 0 0 0 3px rgba(77,159,255,0.1) !important;
     }
 
-    button:hover:not(:disabled) { opacity: 0.8; transform: translateY(-1px); }
-    button:active:not(:disabled) { opacity: 0.6; transform: translateY(0); }
-    button { transition: all 0.15s ease; }
+    button:hover:not(:disabled) { opacity: 0.82; transform: translateY(-1px); }
+    button:active:not(:disabled) { opacity: 0.65; transform: translateY(0); }
+    button { transition: all 0.18s ease; }
 
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(14px); }
+      from { opacity: 0; transform: translateY(16px); }
       to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Scanline effect — subtle */
-    body::after {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0,0,0,0.03) 2px,
-        rgba(0,0,0,0.03) 4px
-      );
-      pointer-events: none;
-      z-index: 0;
     }
 
     @media (max-width: 767px) { body { overflow-x: hidden; } }
