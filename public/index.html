@@ -3,79 +3,274 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <meta name="theme-color" content="#020818"/>
-  <meta name="description" content="CampusAnon - Anonymous Dating for IIIT Patna"/>
+  <meta name="theme-color" content="#04040f"/>
+  <meta name="description" content="CampusAnon — Anonymous Dating for IIIT Pune"/>
   <link rel="icon" href="%PUBLIC_URL%/favicon.ico"/>
   <link rel="apple-touch-icon" href="%PUBLIC_URL%/favicon-180.png"/>
   <link rel="manifest" href="%PUBLIC_URL%/manifest.json"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
   <title>CampusAnon</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-      background: #020818;
-      color: #e8f4ff;
-      font-family: 'Roboto Condensed', sans-serif;
+    :root {
+      --bg:        #04040f;
+      --accent1:   #7c3aed;   /* violet */
+      --accent2:   #06b6d4;   /* cyan   */
+      --accent3:   #f472b6;   /* pink   */
+      --accent4:   #34d399;   /* mint   */
+      --text:      #f0eeff;
+      --muted:     rgba(220,215,255,0.45);
+      --glass:     rgba(255,255,255,0.04);
+      --border:    rgba(255,255,255,0.08);
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
       min-height: 100vh;
       overflow-x: hidden;
     }
 
-    /* Deep midnight blue nebula — multiple layered glows */
-    body::before {
-      content: '';
+    /* ── Live canvas background ─────────────────────────────────── */
+    #bg-canvas {
       position: fixed;
       inset: 0;
-      background:
-        radial-gradient(ellipse 70% 55% at 15% 20%, rgba(30,80,200,0.18) 0%, transparent 65%),
-        radial-gradient(ellipse 60% 70% at 85% 80%, rgba(20,60,180,0.14) 0%, transparent 65%),
-        radial-gradient(ellipse 50% 40% at 60% 10%, rgba(77,159,255,0.08) 0%, transparent 60%),
-        radial-gradient(ellipse 40% 50% at 30% 80%, rgba(40,100,220,0.07) 0%, transparent 60%);
-      pointer-events: none;
       z-index: 0;
+      pointer-events: none;
     }
 
-    /* Subtle star-like noise */
-    body::after {
-      content: '';
+    /* ── Grain overlay ──────────────────────────────────────────── */
+    #grain {
       position: fixed;
-      inset: 0;
-      background-image:
-        radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px),
-        radial-gradient(circle, rgba(77,159,255,0.06) 1px, transparent 1px);
-      background-size: 80px 80px, 120px 120px;
-      background-position: 0 0, 40px 40px;
+      inset: -50%;
+      width: 200%;
+      height: 200%;
+      z-index: 1;
       pointer-events: none;
-      z-index: 0;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      animation: grain 0.4s steps(1) infinite;
+    }
+    @keyframes grain {
+      0%,100%{ transform: translate(0,0) }
+      10%    { transform: translate(-2%,-3%) }
+      20%    { transform: translate(3%,1%) }
+      30%    { transform: translate(-1%,4%) }
+      40%    { transform: translate(4%,-2%) }
+      50%    { transform: translate(-3%,2%) }
+      60%    { transform: translate(2%,-4%) }
+      70%    { transform: translate(-4%,3%) }
+      80%    { transform: translate(1%,-1%) }
+      90%    { transform: translate(3%,4%) }
     }
 
-    #root { position: relative; z-index: 1; }
+    #root { position: relative; z-index: 2; }
 
+    /* ── Scrollbar ──────────────────────────────────────────────── */
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(77,159,255,0.2); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.35); border-radius: 4px; }
 
-    input:focus {
-      border-color: rgba(77,159,255,0.5) !important;
-      box-shadow: 0 0 0 3px rgba(77,159,255,0.1) !important;
+    /* ── Global focus ───────────────────────────────────────────── */
+    input:focus, textarea:focus {
+      border-color: rgba(124,58,237,0.6) !important;
+      box-shadow: 0 0 0 3px rgba(124,58,237,0.12) !important;
     }
 
-    button:hover:not(:disabled) { opacity: 0.82; transform: translateY(-1px); }
-    button:active:not(:disabled) { opacity: 0.65; transform: translateY(0); }
-    button { transition: all 0.18s ease; }
-
+    /* ── Animations ─────────────────────────────────────────────── */
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from { opacity:0; transform:translateY(20px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity:0; }
+      to   { opacity:1; }
+    }
+    @keyframes float {
+      0%,100% { transform:translateY(0px); }
+      50%     { transform:translateY(-10px); }
+    }
+    @keyframes pulse-glow {
+      0%,100% { box-shadow: 0 0 20px rgba(124,58,237,0.3); }
+      50%     { box-shadow: 0 0 40px rgba(124,58,237,0.6), 0 0 80px rgba(6,182,212,0.2); }
+    }
+    @keyframes shimmer {
+      0%   { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    @keyframes spin-slow {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
     }
 
-    @media (max-width: 767px) { body { overflow-x: hidden; } }
+    /* ── Button hover lift ──────────────────────────────────────── */
+    button:not(:disabled) { transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1); }
+    button:hover:not(:disabled) { transform: translateY(-2px); }
+    button:active:not(:disabled) { transform: translateY(0px); transition-duration: 0.08s; }
+
+    /* ── Card entrance ──────────────────────────────────────────── */
+    .card-enter { animation: fadeUp 0.5s cubic-bezier(0.34,1.2,0.64,1) both; }
+    .card-enter:nth-child(1) { animation-delay: 0.0s; }
+    .card-enter:nth-child(2) { animation-delay: 0.08s; }
+    .card-enter:nth-child(3) { animation-delay: 0.16s; }
+    .card-enter:nth-child(4) { animation-delay: 0.24s; }
+    .card-enter:nth-child(5) { animation-delay: 0.32s; }
+
+    @media (max-width: 767px) { body { overflow-x:hidden; } }
   </style>
 </head>
 <body>
+  <canvas id="bg-canvas"></canvas>
+  <div id="grain"></div>
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <div id="root"></div>
+
+  <script>
+  // ── Antigravity-inspired live canvas background ───────────────────────────
+  (function() {
+    const canvas = document.getElementById('bg-canvas');
+    const ctx    = canvas.getContext('2d');
+    let W, H, particles, orbs, time = 0;
+
+    const COLORS = [
+      [124, 58,  237],  // violet
+      [6,   182, 212],  // cyan
+      [244, 114, 182],  // pink
+      [52,  211, 153],  // mint
+      [168, 85,  247],  // purple
+      [34,  211, 238],  // sky
+    ];
+
+    function resize() {
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+
+    // ── Floating orbs (large, blurry, aurora-like) ────────────────
+    function makeOrb() {
+      const c = COLORS[Math.floor(Math.random() * COLORS.length)];
+      return {
+        x:    Math.random() * W,
+        y:    Math.random() * H,
+        r:    Math.random() * 280 + 120,
+        vx:   (Math.random() - 0.5) * 0.18,
+        vy:   (Math.random() - 0.5) * 0.18,
+        color: c,
+        alpha: Math.random() * 0.07 + 0.04,
+        phase: Math.random() * Math.PI * 2,
+        freq:  Math.random() * 0.0008 + 0.0004,
+      };
+    }
+
+    // ── Small floating particles (stars / specs) ──────────────────
+    function makeParticle() {
+      const c = COLORS[Math.floor(Math.random() * COLORS.length)];
+      return {
+        x:     Math.random() * W,
+        y:     Math.random() * H,
+        r:     Math.random() * 1.8 + 0.3,
+        vx:    (Math.random() - 0.5) * 0.25,
+        vy:    (Math.random() - 0.5) * 0.25,
+        color: c,
+        alpha: Math.random() * 0.5 + 0.1,
+        twinkle: Math.random() * Math.PI * 2,
+        twinkleSpeed: Math.random() * 0.025 + 0.008,
+      };
+    }
+
+    function init() {
+      resize();
+      orbs      = Array.from({ length: 8 },  makeOrb);
+      particles = Array.from({ length: 120 }, makeParticle);
+    }
+
+    function drawOrbs() {
+      orbs.forEach(o => {
+        // Gentle breathing
+        const breathe = Math.sin(time * o.freq + o.phase) * 0.3 + 1;
+        const r = o.r * breathe;
+
+        const g = ctx.createRadialGradient(o.x, o.y, 0, o.x, o.y, r);
+        g.addColorStop(0,   `rgba(${o.color[0]},${o.color[1]},${o.color[2]},${o.alpha * 1.8})`);
+        g.addColorStop(0.4, `rgba(${o.color[0]},${o.color[1]},${o.color[2]},${o.alpha})`);
+        g.addColorStop(1,   `rgba(${o.color[0]},${o.color[1]},${o.color[2]},0)`);
+
+        ctx.beginPath();
+        ctx.arc(o.x, o.y, r, 0, Math.PI * 2);
+        ctx.fillStyle = g;
+        ctx.fill();
+
+        // Move
+        o.x += o.vx; o.y += o.vy;
+        if (o.x < -r)  o.x = W + r;
+        if (o.x > W+r) o.x = -r;
+        if (o.y < -r)  o.y = H + r;
+        if (o.y > H+r) o.y = -r;
+      });
+    }
+
+    function drawParticles() {
+      particles.forEach(p => {
+        p.twinkle += p.twinkleSpeed;
+        const a = p.alpha * (0.5 + 0.5 * Math.sin(p.twinkle));
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${p.color[0]},${p.color[1]},${p.color[2]},${a})`;
+        ctx.fill();
+
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+        if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+      });
+    }
+
+    function drawConnections() {
+      // Connect nearby particles with faint lines
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < 90) {
+            const alpha = (1 - dist/90) * 0.06;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(124,58,237,${alpha})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    function frame() {
+      ctx.clearRect(0, 0, W, H);
+
+      // Deep space base
+      ctx.fillStyle = '#04040f';
+      ctx.fillRect(0, 0, W, H);
+
+      // Aurora orbs
+      drawOrbs();
+      // Connection web
+      drawConnections();
+      // Twinkling stars
+      drawParticles();
+
+      time++;
+      requestAnimationFrame(frame);
+    }
+
+    window.addEventListener('resize', () => { resize(); });
+    init();
+    frame();
+  })();
+  </script>
 </body>
 </html>

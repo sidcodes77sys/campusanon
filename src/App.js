@@ -124,7 +124,7 @@ function Header({ profile, currentPage, setCurrentPage, onMenuToggle }) {
       )}
       <div style={{ ...styles.headerLogo, gap: 8 }} onClick={() => setCurrentPage('dashboard')}>
         <span style={{ color: theme.neon, fontSize: 18 }}>✦</span>
-        <span style={{ letterSpacing: 3 }}>CAMPUS<span style={{ color: theme.neon }}>ANON</span></span>
+        <span style={{ letterSpacing: 3 }}>CAMPUS<span style={{ background: 'linear-gradient(135deg, #a78bfa, #06b6d4)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>ANON</span></span>
       </div>
       {profile && !isMobile && (
         <nav style={styles.headerNav}>
@@ -247,8 +247,8 @@ function BottomNav({ currentPage, setCurrentPage }) {
     <nav style={m.bottomNav}>
       {items.map(({ id, icon, label }) => (
         <button key={id} style={m.bottomNavBtn} onClick={() => setCurrentPage(id)}>
-          <span style={{ fontSize: 20, color: currentPage === id ? theme.neon : 'rgba(200,220,255,0.3)', display: 'block' }}>{icon}</span>
-          <span style={{ fontSize: 10, color: currentPage === id ? theme.neon : 'rgba(200,220,255,0.3)', marginTop: 3, letterSpacing: 0.5, textTransform: 'uppercase', fontFamily: RC }}>{label}</span>
+          <span style={{ fontSize: 20, color: currentPage === id ? '#a78bfa' : 'rgba(220,215,255,0.3)', display: 'block' }}>{icon}</span>
+          <span style={{ fontSize: 10, color: currentPage === id ? '#a78bfa' : 'rgba(220,215,255,0.3)', marginTop: 3, letterSpacing: 0.5, textTransform: 'uppercase', fontFamily: RC }}>{label}</span>
         </button>
       ))}
     </nav>
