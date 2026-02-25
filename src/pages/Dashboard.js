@@ -55,7 +55,7 @@ export default function Dashboard() {
 
       {card ? (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
-          <div style={{
+          <div className="tilt-card" style={{
             ...styles.profileCard,
             ...(action === 'liked' ? styles.cardLiked : {}),
             ...(action === 'passed' ? styles.cardPassed : {}),

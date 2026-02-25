@@ -38,7 +38,7 @@ export default function MatchesPage({ setCurrentPage, setActiveChatPartner }) {
       ) : (
         <div style={styles.matchGrid}>
           {matches.map(m => (
-            <div key={m.id} style={styles.matchCard}>
+            <div key={m.id} className="tilt-card" style={styles.matchCard}>
               <div style={styles.matchAvatar}>{m.alias?.[0]}</div>
               <div style={styles.matchAlias}>{m.alias}</div>
               <div style={styles.matchMeta}>

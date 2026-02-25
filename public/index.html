@@ -16,133 +16,281 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:        #04040f;
-      --accent1:   #7c3aed;   /* violet */
-      --accent2:   #06b6d4;   /* cyan   */
-      --accent3:   #f472b6;   /* pink   */
-      --accent4:   #34d399;   /* mint   */
-      --text:      #f0eeff;
-      --muted:     rgba(220,215,255,0.45);
-      --glass:     rgba(255,255,255,0.04);
-      --border:    rgba(255,255,255,0.08);
+      --accent1: #7c3aed;
+      --accent2: #06b6d4;
+      --accent3: #f472b6;
+      --accent4: #34d399;
+      --text:    #f0eeff;
+      --muted:   rgba(220,215,255,0.45);
     }
 
     html, body {
-      background: var(--bg);
+      background: #04040f;
       color: var(--text);
       font-family: 'Outfit', sans-serif;
       min-height: 100vh;
       overflow-x: hidden;
+      cursor: none; /* hide default — we draw our own */
     }
 
-    /* ── Live canvas background ─────────────────────────────────── */
+    /* ── Custom cursor ───────────────────────────────────────── */
+    #cursor-dot {
+      position: fixed;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: white;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%,-50%);
+      transition: width 0.15s, height 0.15s, opacity 0.15s;
+      mix-blend-mode: difference;
+    }
+    #cursor-ring {
+      position: fixed;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(167,139,250,0.7);
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%,-50%);
+      transition: width 0.3s cubic-bezier(0.34,1.56,0.64,1),
+                  height 0.3s cubic-bezier(0.34,1.56,0.64,1),
+                  border-color 0.3s,
+                  opacity 0.3s;
+    }
+    /* On hover over interactive elements — ring expands */
+    body.hovering #cursor-ring {
+      width: 56px; height: 56px;
+      border-color: rgba(244,114,182,0.8);
+    }
+    body.hovering #cursor-dot {
+      width: 4px; height: 4px;
+      opacity: 0.5;
+    }
+    /* Restore default cursor on inputs */
+    input, textarea, select { cursor: text !important; }
+
+    /* ── Canvas background ───────────────────────────────────── */
     #bg-canvas {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
     }
 
-    /* ── Grain overlay ──────────────────────────────────────────── */
+    /* ── Grain overlay ───────────────────────────────────────── */
     #grain {
-      position: fixed;
-      inset: -50%;
-      width: 200%;
-      height: 200%;
-      z-index: 1;
-      pointer-events: none;
-      opacity: 0.035;
+      position: fixed; inset: -50%; width: 200%; height: 200%;
+      z-index: 1; pointer-events: none; opacity: 0.032;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
       animation: grain 0.4s steps(1) infinite;
     }
     @keyframes grain {
-      0%,100%{ transform: translate(0,0) }
-      10%    { transform: translate(-2%,-3%) }
-      20%    { transform: translate(3%,1%) }
-      30%    { transform: translate(-1%,4%) }
-      40%    { transform: translate(4%,-2%) }
-      50%    { transform: translate(-3%,2%) }
-      60%    { transform: translate(2%,-4%) }
-      70%    { transform: translate(-4%,3%) }
-      80%    { transform: translate(1%,-1%) }
-      90%    { transform: translate(3%,4%) }
+      0%,100%{ transform:translate(0,0) }   10%{ transform:translate(-2%,-3%) }
+      20%    { transform:translate(3%,1%) }  30%{ transform:translate(-1%,4%) }
+      40%    { transform:translate(4%,-2%)}  50%{ transform:translate(-3%,2%) }
+      60%    { transform:translate(2%,-4%)}  70%{ transform:translate(-4%,3%) }
+      80%    { transform:translate(1%,-1%)}  90%{ transform:translate(3%,4%) }
+    }
+
+    /* ── Cursor spotlight ────────────────────────────────────── */
+    #spotlight {
+      position: fixed; inset: 0; z-index: 1; pointer-events: none;
+      background: radial-gradient(circle 280px at 50% 50%,
+        rgba(124,58,237,0.06) 0%, transparent 70%);
+      transition: background 0.05s;
     }
 
     #root { position: relative; z-index: 2; }
 
-    /* ── Scrollbar ──────────────────────────────────────────────── */
+    /* ── 3D tilt on cards ────────────────────────────────────── */
+    .tilt-card {
+      transform-style: preserve-3d;
+      transition: transform 0.12s ease-out, box-shadow 0.12s ease-out;
+      will-change: transform;
+    }
+    .tilt-card:hover {
+      box-shadow: 0 24px 60px rgba(124,58,237,0.35), 0 0 0 1px rgba(124,58,237,0.2) !important;
+    }
+
+    /* ── Scrollbar ───────────────────────────────────────────── */
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.35); border-radius: 4px; }
 
-    /* ── Global focus ───────────────────────────────────────────── */
     input:focus, textarea:focus {
       border-color: rgba(124,58,237,0.6) !important;
       box-shadow: 0 0 0 3px rgba(124,58,237,0.12) !important;
     }
 
-    /* ── Animations ─────────────────────────────────────────────── */
+    /* ── Animations ──────────────────────────────────────────── */
     @keyframes fadeUp {
-      from { opacity:0; transform:translateY(20px); }
+      from { opacity:0; transform:translateY(22px); }
       to   { opacity:1; transform:translateY(0); }
     }
     @keyframes fadeIn {
-      from { opacity:0; }
-      to   { opacity:1; }
+      from { opacity:0; } to { opacity:1; }
     }
     @keyframes float {
       0%,100% { transform:translateY(0px); }
       50%     { transform:translateY(-10px); }
     }
     @keyframes pulse-glow {
-      0%,100% { box-shadow: 0 0 20px rgba(124,58,237,0.3); }
-      50%     { box-shadow: 0 0 40px rgba(124,58,237,0.6), 0 0 80px rgba(6,182,212,0.2); }
-    }
-    @keyframes shimmer {
-      0%   { background-position: -200% center; }
-      100% { background-position: 200% center; }
-    }
-    @keyframes spin-slow {
-      from { transform: rotate(0deg); }
-      to   { transform: rotate(360deg); }
+      0%,100% { box-shadow:0 0 20px rgba(124,58,237,0.3); }
+      50%     { box-shadow:0 0 40px rgba(124,58,237,0.65),0 0 80px rgba(6,182,212,0.2); }
     }
 
-    /* ── Button hover lift ──────────────────────────────────────── */
-    button:not(:disabled) { transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1); }
+    button:not(:disabled) { transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1); cursor: none; }
     button:hover:not(:disabled) { transform: translateY(-2px); }
-    button:active:not(:disabled) { transform: translateY(0px); transition-duration: 0.08s; }
+    button:active:not(:disabled) { transform: translateY(0); transition-duration: 0.08s; }
 
-    /* ── Card entrance ──────────────────────────────────────────── */
     .card-enter { animation: fadeUp 0.5s cubic-bezier(0.34,1.2,0.64,1) both; }
-    .card-enter:nth-child(1) { animation-delay: 0.0s; }
-    .card-enter:nth-child(2) { animation-delay: 0.08s; }
-    .card-enter:nth-child(3) { animation-delay: 0.16s; }
-    .card-enter:nth-child(4) { animation-delay: 0.24s; }
-    .card-enter:nth-child(5) { animation-delay: 0.32s; }
+    .card-enter:nth-child(1) { animation-delay:0.00s }
+    .card-enter:nth-child(2) { animation-delay:0.08s }
+    .card-enter:nth-child(3) { animation-delay:0.16s }
+    .card-enter:nth-child(4) { animation-delay:0.24s }
 
-    @media (max-width: 767px) { body { overflow-x:hidden; } }
+    @media (max-width:767px) {
+      body { overflow-x:hidden; cursor:auto; }
+      #cursor-dot, #cursor-ring, #spotlight { display:none; }
+    }
   </style>
 </head>
 <body>
   <canvas id="bg-canvas"></canvas>
   <div id="grain"></div>
+  <div id="spotlight"></div>
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <div id="root"></div>
 
   <script>
-  // ── Antigravity-inspired live canvas background ───────────────────────────
+  // ═══════════════════════════════════════════════════════════
+  //  1. CURSOR — dot + ring + spotlight
+  // ═══════════════════════════════════════════════════════════
+  (function() {
+    const dot      = document.getElementById('cursor-dot');
+    const ring     = document.getElementById('cursor-ring');
+    const spotlight= document.getElementById('spotlight');
+
+    let mx = window.innerWidth/2, my = window.innerHeight/2;
+    let rx = mx, ry = my; // ring lags behind
+
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+
+      // Dot snaps instantly
+      dot.style.left = mx + 'px';
+      dot.style.top  = my + 'px';
+
+      // Spotlight follows cursor
+      spotlight.style.background =
+        `radial-gradient(circle 300px at ${mx}px ${my}px,
+          rgba(124,58,237,0.07) 0%, transparent 70%)`;
+    });
+
+    // Ring lerps smoothly after cursor
+    function lerpRing() {
+      rx += (mx - rx) * 0.13;
+      ry += (my - ry) * 0.13;
+      ring.style.left = rx + 'px';
+      ring.style.top  = ry + 'px';
+      requestAnimationFrame(lerpRing);
+    }
+    lerpRing();
+
+    // Hover detection — expand ring over interactive elements
+    document.addEventListener('mouseover', e => {
+      const t = e.target;
+      if (t.tagName === 'BUTTON' || t.tagName === 'A' ||
+          t.closest('button') || t.closest('a') ||
+          t.style.cursor === 'pointer' || t.classList.contains('tilt-card')) {
+        document.body.classList.add('hovering');
+      } else {
+        document.body.classList.remove('hovering');
+      }
+    });
+
+    // Click ripple
+    document.addEventListener('click', e => {
+      const ripple = document.createElement('div');
+      ripple.style.cssText = `
+        position:fixed; left:${e.clientX}px; top:${e.clientY}px;
+        width:6px; height:6px; border-radius:50%;
+        background:rgba(167,139,250,0.8);
+        transform:translate(-50%,-50%) scale(1);
+        pointer-events:none; z-index:9997;
+        animation: ripple-out 0.5s ease-out forwards;
+      `;
+      document.head.insertAdjacentHTML('beforeend',
+        `<style>@keyframes ripple-out{to{transform:translate(-50%,-50%) scale(12);opacity:0;}}</style>`);
+      document.body.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 500);
+    });
+  })();
+
+  // ═══════════════════════════════════════════════════════════
+  //  2. 3D TILT — cards tilt toward cursor
+  // ═══════════════════════════════════════════════════════════
+  (function() {
+    const MAX_TILT = 12; // degrees
+
+    function applyTilt(card) {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const cx   = rect.left + rect.width / 2;
+        const cy   = rect.top  + rect.height / 2;
+        const dx   = (e.clientX - cx) / (rect.width  / 2);
+        const dy   = (e.clientY - cy) / (rect.height / 2);
+        const rotX =  dy * -MAX_TILT;  // tilt up/down
+        const rotY =  dx *  MAX_TILT;  // tilt left/right
+
+        card.style.transform =
+          `perspective(900px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.025)`;
+
+        // Dynamic highlight shimmer inside card
+        const pct = ((dx + 1) / 2 * 100).toFixed(1);
+        card.style.background =
+          `linear-gradient(${105 + dx*20}deg,
+            rgba(255,255,255,0.0${Math.round(2+Math.abs(dx)*3)}) 0%,
+            rgba(10,6,30,0.55) 40%,
+            rgba(10,6,30,0.55) 100%)`;
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+        card.style.background = '';
+        card.style.transition = 'transform 0.5s cubic-bezier(0.34,1.56,0.64,1), background 0.4s';
+        setTimeout(() => { card.style.transition = ''; }, 500);
+      });
+    }
+
+    // Observer: auto-apply tilt to any .tilt-card added to DOM
+    const observer = new MutationObserver(() => {
+      document.querySelectorAll('.tilt-card:not([data-tilted])').forEach(card => {
+        card.setAttribute('data-tilted', '1');
+        applyTilt(card);
+      });
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  })();
+
+  // ═══════════════════════════════════════════════════════════
+  //  3. LIVE CANVAS — aurora orbs attracted to cursor
+  // ═══════════════════════════════════════════════════════════
   (function() {
     const canvas = document.getElementById('bg-canvas');
     const ctx    = canvas.getContext('2d');
-    let W, H, particles, orbs, time = 0;
+    let W, H, time = 0;
+    let mouseX = -1000, mouseY = -1000;
+
+    document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
 
     const COLORS = [
-      [124, 58,  237],  // violet
-      [6,   182, 212],  // cyan
-      [244, 114, 182],  // pink
-      [52,  211, 153],  // mint
-      [168, 85,  247],  // purple
-      [34,  211, 238],  // sky
+      [124, 58,  237],
+      [6,   182, 212],
+      [244, 114, 182],
+      [52,  211, 153],
+      [168, 85,  247],
+      [34,  211, 238],
     ];
 
     function resize() {
@@ -150,61 +298,79 @@
       H = canvas.height = window.innerHeight;
     }
 
-    // ── Floating orbs (large, blurry, aurora-like) ────────────────
+    // ── Orbs ────────────────────────────────────────────────
     function makeOrb() {
       const c = COLORS[Math.floor(Math.random() * COLORS.length)];
       return {
-        x:    Math.random() * W,
-        y:    Math.random() * H,
-        r:    Math.random() * 280 + 120,
-        vx:   (Math.random() - 0.5) * 0.18,
-        vy:   (Math.random() - 0.5) * 0.18,
+        x: Math.random() * W, y: Math.random() * H,
+        r: Math.random() * 260 + 100,
+        vx: (Math.random() - 0.5) * 0.2,
+        vy: (Math.random() - 0.5) * 0.2,
         color: c,
         alpha: Math.random() * 0.07 + 0.04,
         phase: Math.random() * Math.PI * 2,
-        freq:  Math.random() * 0.0008 + 0.0004,
+        freq:  Math.random() * 0.001 + 0.0004,
+        // Each orb has a different relationship with cursor
+        attract: Math.random() > 0.5 ? 1 : -1, // attract or repel
+        strength: Math.random() * 0.00012 + 0.00004,
       };
     }
 
-    // ── Small floating particles (stars / specs) ──────────────────
+    // ── Particles ───────────────────────────────────────────
     function makeParticle() {
       const c = COLORS[Math.floor(Math.random() * COLORS.length)];
       return {
-        x:     Math.random() * W,
-        y:     Math.random() * H,
-        r:     Math.random() * 1.8 + 0.3,
-        vx:    (Math.random() - 0.5) * 0.25,
-        vy:    (Math.random() - 0.5) * 0.25,
+        x: Math.random() * W, y: Math.random() * H,
+        r: Math.random() * 1.6 + 0.3,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
         color: c,
         alpha: Math.random() * 0.5 + 0.1,
         twinkle: Math.random() * Math.PI * 2,
-        twinkleSpeed: Math.random() * 0.025 + 0.008,
+        twinkleSpeed: Math.random() * 0.022 + 0.006,
+        // Particles gently drift toward cursor
+        cursorWeight: Math.random() * 0.00018,
       };
     }
 
+    let orbs      = [];
+    let particles = [];
+
     function init() {
       resize();
-      orbs      = Array.from({ length: 8 },  makeOrb);
-      particles = Array.from({ length: 120 }, makeParticle);
+      orbs      = Array.from({ length: 7  }, makeOrb);
+      particles = Array.from({ length: 110 }, makeParticle);
     }
 
     function drawOrbs() {
       orbs.forEach(o => {
-        // Gentle breathing
-        const breathe = Math.sin(time * o.freq + o.phase) * 0.3 + 1;
+        // Cursor attraction/repulsion
+        const dx = mouseX - o.x;
+        const dy = mouseY - o.y;
+        const dist = Math.sqrt(dx*dx + dy*dy) || 1;
+        // Only affect if within range
+        if (dist < 600) {
+          o.vx += (dx / dist) * o.strength * o.attract;
+          o.vy += (dy / dist) * o.strength * o.attract;
+        }
+        // Speed cap + friction
+        const speed = Math.sqrt(o.vx*o.vx + o.vy*o.vy);
+        if (speed > 0.6) { o.vx *= 0.6/speed; o.vy *= 0.6/speed; }
+        o.vx *= 0.995; o.vy *= 0.995;
+
+        const breathe = Math.sin(time * o.freq + o.phase) * 0.25 + 1;
         const r = o.r * breathe;
 
         const g = ctx.createRadialGradient(o.x, o.y, 0, o.x, o.y, r);
-        g.addColorStop(0,   `rgba(${o.color[0]},${o.color[1]},${o.color[2]},${o.alpha * 1.8})`);
+        g.addColorStop(0,   `rgba(${o.color[0]},${o.color[1]},${o.color[2]},${o.alpha * 2})`);
         g.addColorStop(0.4, `rgba(${o.color[0]},${o.color[1]},${o.color[2]},${o.alpha})`);
-        g.addColorStop(1,   `rgba(${o.color[0]},${o.color[1]},${o.color[2]},0)`);
+        g.addColorStop(1,   `rgba(${o.color},0)`);
 
         ctx.beginPath();
         ctx.arc(o.x, o.y, r, 0, Math.PI * 2);
         ctx.fillStyle = g;
         ctx.fill();
 
-        // Move
         o.x += o.vx; o.y += o.vy;
         if (o.x < -r)  o.x = W + r;
         if (o.x > W+r) o.x = -r;
@@ -215,6 +381,18 @@
 
     function drawParticles() {
       particles.forEach(p => {
+        // Gentle cursor drift
+        const dx = mouseX - p.x;
+        const dy = mouseY - p.y;
+        const dist = Math.sqrt(dx*dx + dy*dy) || 1;
+        if (dist < 200) {
+          p.vx += (dx / dist) * p.cursorWeight;
+          p.vy += (dy / dist) * p.cursorWeight;
+        }
+        // Speed cap
+        const speed = Math.sqrt(p.vx*p.vx + p.vy*p.vy);
+        if (speed > 1.2) { p.vx *= 1.2/speed; p.vy *= 1.2/speed; }
+
         p.twinkle += p.twinkleSpeed;
         const a = p.alpha * (0.5 + 0.5 * Math.sin(p.twinkle));
 
@@ -230,18 +408,16 @@
     }
 
     function drawConnections() {
-      // Connect nearby particles with faint lines
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
           const dy = particles[i].y - particles[j].y;
           const dist = Math.sqrt(dx*dx + dy*dy);
-          if (dist < 90) {
-            const alpha = (1 - dist/90) * 0.06;
+          if (dist < 85) {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(124,58,237,${alpha})`;
+            ctx.strokeStyle = `rgba(124,58,237,${(1 - dist/85) * 0.055})`;
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }
@@ -249,25 +425,32 @@
       }
     }
 
+    // ── Cursor glow on canvas ───────────────────────────────
+    function drawCursorGlow() {
+      if (mouseX < 0) return;
+      const g = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, 180);
+      g.addColorStop(0,   'rgba(124,58,237,0.06)');
+      g.addColorStop(0.5, 'rgba(6,182,212,0.025)');
+      g.addColorStop(1,   'rgba(0,0,0,0)');
+      ctx.beginPath();
+      ctx.arc(mouseX, mouseY, 180, 0, Math.PI * 2);
+      ctx.fillStyle = g;
+      ctx.fill();
+    }
+
     function frame() {
       ctx.clearRect(0, 0, W, H);
-
-      // Deep space base
       ctx.fillStyle = '#04040f';
       ctx.fillRect(0, 0, W, H);
-
-      // Aurora orbs
+      drawCursorGlow();
       drawOrbs();
-      // Connection web
       drawConnections();
-      // Twinkling stars
       drawParticles();
-
       time++;
       requestAnimationFrame(frame);
     }
 
-    window.addEventListener('resize', () => { resize(); });
+    window.addEventListener('resize', resize);
     init();
     frame();
   })();

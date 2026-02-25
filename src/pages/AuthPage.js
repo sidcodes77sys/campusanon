@@ -85,7 +85,7 @@ export default function AuthPage() {
 
   return (
     <div style={styles.authWrap}>
-      <div style={styles.authCard}>
+      <div className="tilt-card" style={styles.authCard}>
         <div style={styles.authCardTopLine} />
         <div style={{ textAlign: 'center', marginBottom: 6 }}>
           <span style={{ fontSize: 36, background: theme.gradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>✦</span>
