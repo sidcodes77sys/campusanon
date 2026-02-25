@@ -34,11 +34,12 @@ const glass = {
 
 export const styles = {
   appWrap: {
-    display: 'flex', flexDirection: 'column', minHeight: '100vh',
+    display: 'flex', flexDirection: 'column', height: '100vh',
     fontFamily: F, color: theme.text, background: 'transparent',
+    overflow: 'hidden',
   },
-  body: { display: 'flex', flex: 1 },
-  main: { flex: 1, overflow: 'auto' },
+  body: { display: 'flex', flex: 1, minHeight: 0, overflow: 'hidden' },
+  main: { flex: 1, minHeight: 0, overflow: 'auto', display: 'flex', flexDirection: 'column' },
   loadingWrap: {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     height: '80vh', gap: 14, flexDirection: 'column',
@@ -278,7 +279,7 @@ export const styles = {
   matchMeta: { color: theme.textMuted, fontSize: 12, marginBottom: 12 },
 
   // ── Chat ──────────────────────────────────────────────────────────────────
-  chatLayout: { display: 'flex', height: 'calc(100vh - 62px)', overflow: 'hidden' },
+  chatLayout: { display: 'flex', flex: 1, height: '100%', overflow: 'hidden', background: 'rgba(4,4,15,0.7)' },
   chatList: {
     width: 260, ...glass,
     borderTop: 'none', borderBottom: 'none', borderLeft: 'none',
@@ -311,10 +312,10 @@ export const styles = {
   chatWindow: { flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' },
   chatHeader: {
     display: 'flex', alignItems: 'center', gap: 14, padding: '13px 24px',
-    ...glass,
+    background: 'rgba(6,4,20,0.9)', backdropFilter: 'blur(40px)', WebkitBackdropFilter: 'blur(40px)',
     borderTop: 'none', borderLeft: 'none', borderRight: 'none',
     borderBottom: '1px solid rgba(255,255,255,0.06)',
-    flexShrink: 0, position: 'sticky', top: 0, zIndex: 10,
+    flexShrink: 0,
   },
   chatHeaderAvatar: {
     width: 38, height: 38, borderRadius: '50%', background: theme.gradient, color: '#fff',
@@ -328,6 +329,7 @@ export const styles = {
     flex: 1, minHeight: 0, overflowY: 'auto', padding: '24px',
     display: 'flex', flexDirection: 'column', gap: 12,
     WebkitOverflowScrolling: 'touch',
+    background: 'rgba(4,2,16,0.5)',
   },
   msgWrapMe:   { display: 'flex', flexDirection: 'column', alignItems: 'flex-end' },
   msgWrapThem: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start' },
@@ -347,8 +349,8 @@ export const styles = {
   msgTime: { fontSize: 10, color: theme.textDim, marginTop: 4, letterSpacing: 0.5 },
   chatInputRow: {
     display: 'flex', gap: 10, padding: '14px 18px',
-    ...glass,
-    borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: 'none', borderLeft: 'none', borderRight: 'none',
+    background: 'rgba(6,4,20,0.9)', backdropFilter: 'blur(40px)', WebkitBackdropFilter: 'blur(40px)',
+    borderTop: '1px solid rgba(255,255,255,0.06)',
     flexShrink: 0,
   },
   chatInput: {

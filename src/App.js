@@ -255,9 +255,10 @@ function BottomNav({ currentPage, setCurrentPage }) {
   );
 }
 
-function Footer({ setCurrentPage, onLegal }) {
+function Footer({ setCurrentPage, onLegal, currentPage }) {
   const isMobile = useIsMobile();
   if (isMobile) return null;
+  if (currentPage === 'chat') return null;  // chat needs full height
   return (
     <footer style={styles.footer}>
       <span style={{ color: theme.neon }}>✦</span>
@@ -301,7 +302,7 @@ function InnerApp() {
     <div style={styles.appWrap}>
       <Header profile={null} currentPage={currentPage} setCurrentPage={setCurrentPage} onMenuToggle={() => {}} />
       {currentPage === 'info' ? <InfoPage /> : <AuthPage />}
-      <Footer setCurrentPage={setCurrentPage} onLegal={setLegalModal} />
+      <Footer setCurrentPage={setCurrentPage} onLegal={setLegalModal} currentPage={currentPage} />
       <LegalModal type={legalModal} onClose={() => setLegalModal(null)} />
     </div>
   );
@@ -315,7 +316,7 @@ function InnerApp() {
           setCurrentPage={setCurrentPage} isOpen={menuOpen}
           onClose={() => setMenuOpen(false)} stats={stats}
         />
-        <main style={{ ...styles.main, padding: isMobile ? '0' : undefined }}>
+        <main style={{ ...styles.main, padding: isMobile ? '0' : undefined, overflow: currentPage === 'chat' ? 'hidden' : 'auto' }}>
           {currentPage === 'dashboard' && <Dashboard />}
           {currentPage === 'matches'   && <MatchesPage setCurrentPage={setCurrentPage} setActiveChatPartner={setActiveChatPartner} />}
           {currentPage === 'chat'      && <ChatPage activeChatPartner={activeChatPartner} setActiveChatPartner={setActiveChatPartner} />}
@@ -325,7 +326,7 @@ function InnerApp() {
         </main>
       </div>
       <BottomNav currentPage={currentPage} setCurrentPage={setCurrentPage} />
-      <Footer setCurrentPage={setCurrentPage} onLegal={setLegalModal} />
+      <Footer setCurrentPage={setCurrentPage} onLegal={setLegalModal} currentPage={currentPage} />
       <LegalModal type={legalModal} onClose={() => setLegalModal(null)} />
     </div>
   );
