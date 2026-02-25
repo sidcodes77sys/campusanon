@@ -278,7 +278,7 @@ export const styles = {
   matchMeta: { color: theme.textMuted, fontSize: 12, marginBottom: 12 },
 
   // ── Chat ──────────────────────────────────────────────────────────────────
-  chatLayout: { display: 'flex', height: 'calc(100vh - 62px)' },
+  chatLayout: { display: 'flex', height: 'calc(100vh - 62px)', overflow: 'hidden' },
   chatList: {
     width: 260, ...glass,
     borderTop: 'none', borderBottom: 'none', borderLeft: 'none',
@@ -308,7 +308,7 @@ export const styles = {
   chatListName: { fontWeight: 700, fontSize: 14, color: theme.text },
   chatListPreview: { color: theme.textMuted, fontSize: 12, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginTop: 2 },
   onlineDot: { width: 8, height: 8, borderRadius: '50%', background: theme.success, position: 'absolute', right: 16, top: 14, boxShadow: '0 0 6px rgba(52,211,153,0.7)' },
-  chatWindow: { flex: 1, display: 'flex', flexDirection: 'column' },
+  chatWindow: { flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' },
   chatHeader: {
     display: 'flex', alignItems: 'center', gap: 14, padding: '13px 24px',
     ...glass,
