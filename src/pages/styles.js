@@ -281,7 +281,7 @@ export const styles = {
   // ── Chat ──────────────────────────────────────────────────────────────────
   chatLayout: { display: 'flex', flex: 1, height: '100%', overflow: 'hidden', background: 'rgba(4,4,15,0.7)' },
   chatList: {
-    width: 260, ...glass,
+    width: '260px', minWidth: '260px', ...glass,
     borderTop: 'none', borderBottom: 'none', borderLeft: 'none',
     borderRight: '1px solid rgba(255,255,255,0.07)',
     overflowY: 'auto', flexShrink: 0,
@@ -309,7 +309,7 @@ export const styles = {
   chatListName: { fontWeight: 700, fontSize: 14, color: theme.text },
   chatListPreview: { color: theme.textMuted, fontSize: 12, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginTop: 2 },
   onlineDot: { width: 8, height: 8, borderRadius: '50%', background: theme.success, position: 'absolute', right: 16, top: 14, boxShadow: '0 0 6px rgba(52,211,153,0.7)' },
-  chatWindow: { flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' },
+  chatWindow: { flex: 1, minWidth: 0, minHeight: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden', width: '100%' },
   chatHeader: {
     display: 'flex', alignItems: 'center', gap: 14, padding: '13px 24px',
     background: 'rgba(6,4,20,0.9)', backdropFilter: 'blur(40px)', WebkitBackdropFilter: 'blur(40px)',
