@@ -123,7 +123,7 @@ function Header({ profile, currentPage, setCurrentPage, onMenuToggle }) {
         </button>
       )}
       <div style={{ ...styles.headerLogo, gap: 8 }} onClick={() => setCurrentPage('dashboard')}>
-        <span style={{ color: theme.neon, fontSize: 18 }}>✦</span>
+        <span className="logo-breathe" style={{ color: theme.neon, fontSize: 18, display: 'inline-block' }}>✦</span>
         <span style={{ letterSpacing: 3 }}>CAMPUS<span style={{ background: 'linear-gradient(135deg, #a78bfa, #06b6d4)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>ANON</span></span>
       </div>
       {profile && !isMobile && (
@@ -191,7 +191,9 @@ function Sidebar({ profile, currentPage, setCurrentPage, isOpen, onClose, stats 
       {items.map(({ id, icon, label }) => (
         <button key={id}
           style={currentPage === id ? { ...styles.sidebarItem, ...styles.sidebarItemActive } : styles.sidebarItem}
-          onClick={() => navigate(id)}>
+          onClick={() => navigate(id)}
+          onMouseEnter={e => { if (currentPage !== id) { e.currentTarget.style.background = 'rgba(139,92,246,0.08)'; e.currentTarget.style.color = theme.text; } }}
+          onMouseLeave={e => { if (currentPage !== id) { e.currentTarget.style.background = ''; e.currentTarget.style.color = ''; } }}>
           <span style={{ color: currentPage === id ? theme.neon : theme.textMuted, fontSize: 14, width: 18, textAlign: 'center' }}>{icon}</span>
           {label}
         </button>
@@ -245,12 +247,23 @@ function BottomNav({ currentPage, setCurrentPage }) {
   ];
   return (
     <nav style={m.bottomNav}>
-      {items.map(({ id, icon, label }) => (
-        <button key={id} style={m.bottomNavBtn} onClick={() => setCurrentPage(id)}>
-          <span style={{ fontSize: 20, color: currentPage === id ? '#a78bfa' : 'rgba(220,215,255,0.3)', display: 'block' }}>{icon}</span>
-          <span style={{ fontSize: 10, color: currentPage === id ? '#a78bfa' : 'rgba(220,215,255,0.3)', marginTop: 3, letterSpacing: 0.5, textTransform: 'uppercase', fontFamily: RC }}>{label}</span>
-        </button>
-      ))}
+      {items.map(({ id, icon, label }) => {
+        const isActive = currentPage === id;
+        return (
+          <button key={id} style={m.bottomNavBtn} onClick={() => setCurrentPage(id)}>
+            {isActive && (
+              <span style={{
+                position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)',
+                width: 32, height: 2, borderRadius: 2,
+                background: 'linear-gradient(90deg, #8b5cf6, #06b6d4)',
+                boxShadow: '0 0 8px rgba(139,92,246,0.8)',
+              }} />
+            )}
+            <span style={{ fontSize: 20, color: isActive ? '#a78bfa' : 'rgba(220,215,255,0.3)', display: 'block', transition: 'color 0.2s', transform: isActive ? 'scale(1.15)' : 'scale(1)', transitionProperty: 'color, transform' }}>{icon}</span>
+            <span style={{ fontSize: 10, color: isActive ? '#a78bfa' : 'rgba(220,215,255,0.3)', marginTop: 3, letterSpacing: 0.5, textTransform: 'uppercase', fontFamily: RC, transition: 'color 0.2s' }}>{label}</span>
+          </button>
+        );
+      })}
     </nav>
   );
 }
@@ -317,12 +330,14 @@ function InnerApp() {
           onClose={() => setMenuOpen(false)} stats={stats}
         />
         <main style={{ ...styles.main, padding: isMobile ? '0' : undefined, overflow: currentPage === 'chat' ? 'hidden' : 'auto' }}>
-          {currentPage === 'dashboard' && <Dashboard />}
-          {currentPage === 'matches'   && <MatchesPage setCurrentPage={setCurrentPage} setActiveChatPartner={setActiveChatPartner} />}
-          {currentPage === 'chat'      && <ChatPage activeChatPartner={activeChatPartner} setActiveChatPartner={setActiveChatPartner} />}
-          {currentPage === 'profile'   && <ProfilePage />}
-          {currentPage === 'settings'  && <SettingsPage />}
-          {currentPage === 'info'      && <InfoPage />}
+          <div key={currentPage} style={{ flex: 1, display: 'flex', flexDirection: 'column', animation: 'fadeIn 0.3s ease both' }}>
+            {currentPage === 'dashboard' && <Dashboard />}
+            {currentPage === 'matches'   && <MatchesPage setCurrentPage={setCurrentPage} setActiveChatPartner={setActiveChatPartner} />}
+            {currentPage === 'chat'      && <ChatPage activeChatPartner={activeChatPartner} setActiveChatPartner={setActiveChatPartner} />}
+            {currentPage === 'profile'   && <ProfilePage />}
+            {currentPage === 'settings'  && <SettingsPage />}
+            {currentPage === 'info'      && <InfoPage />}
+          </div>
         </main>
       </div>
       <BottomNav currentPage={currentPage} setCurrentPage={setCurrentPage} />

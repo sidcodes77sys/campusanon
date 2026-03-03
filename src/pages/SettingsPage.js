@@ -86,7 +86,7 @@ export default function SettingsPage() {
 
   return (
     <div style={styles.pageWrap}>
-      <h2 style={styles.pageTitle}><span style={{ color: theme.neon }}>✦</span> Settings</h2>
+      <h2 style={styles.pageTitle}><span style={{ color: theme.neon, WebkitTextFillColor: 'initial' }}>✦</span> Settings</h2>
       <p style={styles.pageSubtitle}>manage your preferences and account</p>
 
       <div style={{ ...styles.settingsCard, maxWidth: 500 }}>
@@ -103,11 +103,12 @@ export default function SettingsPage() {
               flexShrink: 0,
               padding: '8px 16px',
               borderRadius: 8,
-              border: `1px solid ${notifPerm === 'granted' ? 'rgba(77,255,180,0.3)' : notifPerm === 'denied' ? 'rgba(255,107,138,0.3)' : 'rgba(77,159,255,0.3)'}`,
-              background: notifPerm === 'granted' ? 'rgba(77,255,180,0.08)' : notifPerm === 'denied' ? 'rgba(255,107,138,0.08)' : 'rgba(77,159,255,0.08)',
+              border: `1px solid ${notifPerm === 'granted' ? 'rgba(52,211,153,0.4)' : notifPerm === 'denied' ? 'rgba(251,113,133,0.4)' : 'rgba(139,92,246,0.4)'}`,
+              background: notifPerm === 'granted' ? 'rgba(52,211,153,0.08)' : notifPerm === 'denied' ? 'rgba(251,113,133,0.08)' : 'rgba(139,92,246,0.08)',
               color: notifPerm === 'granted' ? theme.success : notifPerm === 'denied' ? theme.error : theme.neon,
               fontSize: 12, fontWeight: 700, cursor: 'pointer',
               fontFamily: "'Roboto Condensed',sans-serif", letterSpacing: 1,
+              transition: 'all 0.2s',
             }}>
             {notifLabel}
           </button>
@@ -120,12 +121,12 @@ export default function SettingsPage() {
             <div style={styles.settingDesc}>Let matches see when you're active</div>
           </div>
           <div style={showOnline ? styles.toggleOn : styles.toggleOff} onClick={() => setShowOnline(!showOnline)}>
-            <div style={{ ...styles.toggleKnob, right: showOnline ? 3 : 'auto', left: showOnline ? 'auto' : 3 }} />
+            <div style={{ ...styles.toggleKnob, right: showOnline ? 4 : 'auto', left: showOnline ? 'auto' : 4 }} />
           </div>
         </div>
 
         {/* Age range */}
-        <div style={{ padding: '18px 0', borderBottom: `1px solid rgba(77,159,255,0.07)` }}>
+        <div style={{ padding: '18px 0', borderBottom: '1px solid rgba(139,92,246,0.1)' }}>
           <div style={styles.settingLabel}>Age Range Preference</div>
           <div style={{ display: 'flex', gap: 16, alignItems: 'center', marginTop: 12 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -149,8 +150,9 @@ export default function SettingsPage() {
           </div>
 
           <button onClick={handleLogout} disabled={loggingOut} style={{
-            ...btnBase, background: 'rgba(77,159,255,0.08)',
-            border: '1px solid rgba(77,159,255,0.25)', color: theme.neon, marginBottom: 10,
+            ...btnBase, background: 'rgba(139,92,246,0.08)',
+            border: '1px solid rgba(139,92,246,0.25)', color: theme.neon, marginBottom: 10,
+            transition: 'all 0.2s',
           }}>
             <span style={{ fontSize: 16 }}>→</span>
             {loggingOut ? 'Logging out...' : 'Logout'}
@@ -158,16 +160,18 @@ export default function SettingsPage() {
 
           <button onClick={handleDeleteAccount} disabled={deleting} style={{
             ...btnBase,
-            background: confirmDelete ? 'rgba(255,107,138,0.12)' : 'rgba(255,255,255,0.03)',
-            border: `1px solid ${confirmDelete ? 'rgba(255,107,138,0.4)' : 'rgba(255,255,255,0.08)'}`,
+            background: confirmDelete ? 'rgba(251,113,133,0.12)' : 'rgba(255,255,255,0.03)',
+            border: `1px solid ${confirmDelete ? 'rgba(251,113,133,0.5)' : 'rgba(255,255,255,0.08)'}`,
             color: confirmDelete ? theme.error : theme.textMuted,
+            animation: confirmDelete ? 'shake 0.5s cubic-bezier(0.36,0.07,0.19,0.97)' : 'none',
+            transition: 'all 0.2s',
           }}>
             <span>✕</span>
             {deleting ? 'Deleting everything...' : confirmDelete ? '⚠ Tap again — permanent' : 'Delete Account'}
           </button>
 
           {confirmDelete && !deleting && (
-            <div style={{ marginTop: 10, fontSize: 12, color: theme.error, textAlign: 'center' }}>
+            <div style={{ marginTop: 10, fontSize: 12, color: theme.error, textAlign: 'center', animation: 'fadeIn 0.3s ease' }}>
               Permanently deletes your profile, matches &amp; all messages.
             </div>
           )}
@@ -175,7 +179,7 @@ export default function SettingsPage() {
 
         <div style={{
           marginTop: 16, padding: '14px 16px',
-          background: 'rgba(77,159,255,0.05)', border: '1px solid rgba(77,159,255,0.1)',
+          background: 'rgba(139,92,246,0.05)', border: '1px solid rgba(139,92,246,0.12)',
           borderRadius: 10, fontSize: 12, color: theme.textMuted, lineHeight: 1.6,
         }}>
           🔒 Your identity is always protected. We never share your email or personal information.

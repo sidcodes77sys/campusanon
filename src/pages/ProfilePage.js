@@ -45,9 +45,13 @@ export default function ProfilePage() {
     cursor: 'default',
   };
 
+  const saveBtnStyle = saved
+    ? { ...styles.primaryBtn, background: 'linear-gradient(135deg, #34d399, #06b6d4)', boxShadow: '0 4px 24px rgba(52,211,153,0.4)' }
+    : styles.primaryBtn;
+
   return (
     <div style={styles.pageWrap}>
-      <h2 style={styles.pageTitle}><span style={{ color: theme.neon }}>$</span> my_profile</h2>
+      <h2 style={styles.pageTitle}><span style={{ color: theme.neon, WebkitTextFillColor: 'initial' }}>$</span> my_profile</h2>
       <p style={styles.pageSubtitle}>// edit your bio and interests</p>
 
       <div style={{ ...styles.profileEditCard, maxWidth: 500 }}>
@@ -91,7 +95,7 @@ export default function ProfilePage() {
           <label style={styles.label}>interests (max 6)</label>
           <div style={{ ...styles.interestRow, justifyContent: 'flex-start', marginBottom: 10 }}>
             {interests.map((int, i) => (
-              <span key={i} style={{ ...styles.interestTag, cursor: 'pointer' }} onClick={() => removeInterest(i)}>
+              <span key={i} className="tag-pop" style={{ ...styles.interestTag, cursor: 'pointer' }} onClick={() => removeInterest(i)}>
                 #{int} ✕
               </span>
             ))}
@@ -110,8 +114,13 @@ export default function ProfilePage() {
         </div>
 
         {error && <div style={styles.error}>{error}</div>}
-        <button style={styles.primaryBtn} onClick={save} disabled={saving}>
-          {saving ? 'saving...' : saved ? '✓ saved!' : 'save_profile()'}
+        <button className="shimmer-btn" style={saveBtnStyle} onClick={save} disabled={saving}>
+          {saving ? (
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ display: 'inline-block', animation: 'saveSpin 0.8s linear infinite' }}>⟳</span>
+              saving...
+            </span>
+          ) : saved ? '✓ saved!' : 'save_profile()'}
         </button>
       </div>
     </div>
