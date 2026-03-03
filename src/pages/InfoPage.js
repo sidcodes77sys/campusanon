@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { styles, theme } from './styles';
 
-const mono = "'Space Mono', monospace";
-const RC = "'Roboto Condensed', sans-serif";
+const F = "-apple-system, BlinkMacSystemFont, 'Inter', 'SF Pro Display', sans-serif";
+const mono = "'SF Mono', 'Space Mono', monospace";
 
 export default function InfoPage() {
   const [openFaq, setOpenFaq] = useState(null);
@@ -53,32 +53,30 @@ export default function InfoPage() {
       {/* Hero */}
       <div style={{
         textAlign: 'center', padding: 'clamp(32px,6vw,64px) 0 clamp(24px,4vw,48px)',
-        borderBottom: '1px solid rgba(139,92,246,0.12)', marginBottom: 48,
+        borderBottom: '0.5px solid rgba(255,255,255,0.06)', marginBottom: 48,
       }}>
-        <div className="breathe" style={{ fontSize: 52, marginBottom: 16, display: 'inline-block', filter: 'drop-shadow(0 0 16px rgba(139,92,246,0.7))' }}>✦</div>
         <h1 style={{
-          fontFamily: RC, fontSize: 'clamp(28px,6vw,44px)', fontWeight: 800,
-          letterSpacing: 4, textTransform: 'uppercase', marginBottom: 16,
-          background: 'linear-gradient(135deg, #f0eeff 0%, #a78bfa 50%, #06b6d4 100%)',
-          WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+          fontFamily: F, fontSize: 'clamp(32px,6vw,52px)', fontWeight: 300,
+          letterSpacing: -1, marginBottom: 16,
+          color: theme.text,
         }}>
-          CAMPUS<span style={{ background: 'linear-gradient(135deg, #a78bfa, #ec4899)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>ANON</span>
+          Campus<span style={{ color: theme.accent }}>Anon</span>
         </h1>
         <p style={{
           color: theme.textMuted, fontSize: 'clamp(14px,2vw,17px)', maxWidth: 480,
-          margin: '0 auto', lineHeight: 1.8, fontFamily: RC,
+          margin: '0 auto', lineHeight: 1.8, fontFamily: F,
         }}>
           Anonymous dating for IIIT Pune students.<br />
           No real names. No pressure. Just genuine connections.
         </p>
         <div style={{
-          display: 'flex', justifyContent: 'center', gap: 12, marginTop: 28, flexWrap: 'wrap',
+          display: 'flex', justifyContent: 'center', gap: 10, marginTop: 28, flexWrap: 'wrap',
         }}>
           {['100% Anonymous', 'IIIT-P Only', 'No Ads', 'Mobile First'].map(tag => (
             <span key={tag} style={{
-              background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.25)',
-              borderRadius: 20, padding: '6px 18px', fontSize: 12,
-              color: theme.neon, fontFamily: RC, letterSpacing: 1.5, fontWeight: 700, textTransform: 'uppercase',
+              background: 'rgba(255,255,255,0.06)',
+              borderRadius: 20, padding: '5px 16px', fontSize: 12,
+              color: theme.textMuted, fontFamily: F, letterSpacing: 0.3, fontWeight: 400,
               transition: 'all 0.2s',
             }}>{tag}</span>
           ))}
@@ -87,7 +85,7 @@ export default function InfoPage() {
 
       {/* Feature cards */}
       <h2 style={{ ...styles.pageTitle, marginBottom: 24, fontSize: 20 }}>
-        <span style={{ color: theme.neon, WebkitTextFillColor: 'initial' }}>✦</span> How It Works
+        How It Works
       </h2>
       <div style={{
         display: 'grid',
@@ -96,20 +94,18 @@ export default function InfoPage() {
       }}>
         {sections.map((s, i) => (
           <div key={i} className="card-enter" style={{
-            background: 'rgba(10,6,30,0.6)', backdropFilter: 'blur(50px)',
-            border: '1px solid rgba(139,92,246,0.14)',
-            borderRadius: 16, padding: '28px 24px',
-            boxShadow: '0 8px 40px rgba(0,0,0,0.4), inset 0 0 20px rgba(139,92,246,0.02)',
-            position: 'relative', overflow: 'hidden',
-            transition: 'all 0.3s cubic-bezier(0.34,1.2,0.64,1)',
+            background: '#1c1c1e',
+            border: '1px solid rgba(255,255,255,0.08)',
+            borderRadius: 12, padding: '24px 22px',
+            boxShadow: '0 2px 10px rgba(0,0,0,0.2)',
+            transition: 'all 0.2s cubic-bezier(0.25,0.1,0.25,1)',
           }}>
-            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: 'linear-gradient(90deg, transparent, rgba(139,92,246,0.5), transparent)' }} />
-            <div style={{ fontSize: 30, marginBottom: 14, animation: 'breathe 3s ease-in-out infinite' }}>{s.icon}</div>
+            <div style={{ fontSize: 26, marginBottom: 12 }}>{s.icon}</div>
             <div style={{
-              fontFamily: RC, fontWeight: 800, fontSize: 16, color: theme.text,
-              letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 12,
+              fontFamily: F, fontWeight: 600, fontSize: 15, color: theme.text,
+              marginBottom: 10,
             }}>{s.title}</div>
-            <div style={{ color: theme.textMuted, fontSize: 13, lineHeight: 1.8, fontFamily: RC }}>
+            <div style={{ color: theme.textMuted, fontSize: 13, lineHeight: 1.8, fontFamily: F }}>
               {s.body}
             </div>
           </div>
@@ -118,10 +114,10 @@ export default function InfoPage() {
 
       {/* Stats strip */}
       <div style={{
-        display: 'flex', gap: 0, marginBottom: 52,
-        background: 'rgba(10,6,30,0.6)', border: '1px solid rgba(139,92,246,0.14)',
-        borderRadius: 16, overflow: 'hidden', flexWrap: 'wrap',
-        boxShadow: '0 8px 40px rgba(0,0,0,0.3)',
+        display: 'flex', gap: 0, marginBottom: 48,
+        background: '#1c1c1e', border: '1px solid rgba(255,255,255,0.08)',
+        borderRadius: 12, overflow: 'hidden', flexWrap: 'wrap',
+        boxShadow: '0 2px 10px rgba(0,0,0,0.2)',
       }}>
         {[
           { n: '2', label: 'Departments' },
@@ -130,55 +126,53 @@ export default function InfoPage() {
           { n: '0', label: 'Ads Ever' },
         ].map((s, i) => (
           <div key={i} style={{
-            flex: 1, minWidth: 120, textAlign: 'center', padding: '28px 16px',
-            borderRight: i < 3 ? '1px solid rgba(139,92,246,0.1)' : 'none',
-            animation: `countUp 0.5s ease both ${i * 0.1}s`,
+            flex: 1, minWidth: 120, textAlign: 'center', padding: '24px 14px',
+            borderRight: i < 3 ? '0.5px solid rgba(255,255,255,0.06)' : 'none',
           }}>
             <div style={{
-              fontFamily: mono, fontSize: 'clamp(24px,4vw,36px)', fontWeight: 700,
-              background: 'linear-gradient(135deg, #a78bfa, #06b6d4)',
-              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-              marginBottom: 8,
+              fontFamily: mono, fontSize: 'clamp(22px,4vw,32px)', fontWeight: 200,
+              color: theme.text,
+              marginBottom: 6,
             }}>{s.n}</div>
-            <div style={{ color: theme.textMuted, fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', fontFamily: RC }}>{s.label}</div>
+            <div style={{ color: theme.textMuted, fontSize: 11, letterSpacing: 0.5, fontFamily: F }}>{s.label}</div>
           </div>
         ))}
       </div>
 
       {/* FAQ — with expand/collapse animation */}
       <h2 style={{ ...styles.pageTitle, marginBottom: 24, fontSize: 20 }}>
-        <span style={{ color: theme.neon, WebkitTextFillColor: 'initial' }}>✦</span> FAQ
+        FAQ
       </h2>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 52 }}>
         {faqs.map((f, i) => (
           <div key={i} style={{
-            background: openFaq === i ? 'rgba(139,92,246,0.1)' : 'rgba(10,6,30,0.55)',
-            border: `1px solid ${openFaq === i ? 'rgba(139,92,246,0.3)' : 'rgba(139,92,246,0.12)'}`,
-            borderRadius: 12, overflow: 'hidden',
-            transition: 'all 0.3s ease',
+            background: openFaq === i ? 'rgba(255,255,255,0.04)' : '#1c1c1e',
+            border: `0.5px solid ${openFaq === i ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.08)'}`,
+            borderRadius: 10, overflow: 'hidden',
+            transition: 'all 0.2s ease',
           }}>
             <button
               onClick={() => setOpenFaq(openFaq === i ? null : i)}
               style={{
                 width: '100%', background: 'none', border: 'none', cursor: 'pointer',
-                padding: '18px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                 gap: 12,
               }}>
-              <span style={{ fontFamily: RC, fontWeight: 800, fontSize: 14, color: theme.text, letterSpacing: 0.5, textAlign: 'left' }}>
+              <span style={{ fontFamily: F, fontWeight: 500, fontSize: 14, color: theme.text, textAlign: 'left' }}>
                 {f.q}
               </span>
               <span style={{
-                color: theme.neon, fontSize: 16, flexShrink: 0,
+                color: theme.textMuted, fontSize: 16, flexShrink: 0,
                 transform: openFaq === i ? 'rotate(45deg)' : 'rotate(0)',
-                transition: 'transform 0.3s cubic-bezier(0.34,1.56,0.64,1)',
+                transition: 'transform 0.2s cubic-bezier(0.25,0.1,0.25,1)',
                 display: 'inline-block',
               }}>+</span>
             </button>
             {openFaq === i && (
               <div style={{
-                padding: '0 24px 18px', color: theme.textMuted, fontSize: 13,
-                lineHeight: 1.8, fontFamily: RC,
-                animation: 'fadeIn 0.25s ease both',
+                padding: '0 20px 16px', color: theme.textMuted, fontSize: 13,
+                lineHeight: 1.8, fontFamily: F,
+                animation: 'fadeIn 0.2s ease both',
               }}>
                 {f.a}
               </div>
@@ -190,18 +184,17 @@ export default function InfoPage() {
       {/* Built by */}
       <div style={{
         textAlign: 'center', padding: '36px 24px',
-        background: 'rgba(10,6,30,0.6)', border: '1px solid rgba(139,92,246,0.14)',
-        borderRadius: 16, boxShadow: '0 8px 40px rgba(0,0,0,0.3)',
+        background: '#1c1c1e', border: '1px solid rgba(255,255,255,0.08)',
+        borderRadius: 12, boxShadow: '0 2px 10px rgba(0,0,0,0.2)',
       }}>
-        <div style={{ fontSize: 28, marginBottom: 12, animation: 'breathe 3s ease-in-out infinite' }}>🎓</div>
-        <div style={{ fontFamily: RC, fontSize: 16, fontWeight: 800, color: theme.text, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 10 }}>
+        <div style={{ fontFamily: F, fontSize: 15, fontWeight: 500, color: theme.text, marginBottom: 10 }}>
           Built by a student, for students
         </div>
-        <div style={{ color: theme.textMuted, fontSize: 13, lineHeight: 1.8, maxWidth: 380, margin: '0 auto', fontFamily: RC }}>
+        <div style={{ color: theme.textMuted, fontSize: 13, lineHeight: 1.8, maxWidth: 380, margin: '0 auto', fontFamily: F }}>
           CampusAnon is an open project built with love for the IIIT Pune community. Feedback, suggestions, and bug reports are always welcome.
         </div>
-        <div style={{ marginTop: 20, color: theme.textDim, fontSize: 11, letterSpacing: 2, fontFamily: RC, textTransform: 'uppercase' }}>
-          Made with <span style={{ color: theme.neon }}>♥</span> for students · IIIT Pune · 2026
+        <div style={{ marginTop: 18, color: theme.textDim, fontSize: 11, letterSpacing: 0.3, fontFamily: F }}>
+          Made with love for students · IIIT Pune · 2026
         </div>
       </div>
     </div>

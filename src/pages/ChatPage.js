@@ -71,21 +71,20 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
 
   // ── Shared inner styles ──────────────────────────────────────────────────
   const headerStyle = {
-    display: 'flex', alignItems: 'center', gap: 14, padding: '13px 24px',
-    background: 'rgba(6,4,20,0.92)', backdropFilter: 'blur(50px)',
-    borderBottom: '1px solid rgba(255,255,255,0.07)',
+    display: 'flex', alignItems: 'center', gap: 14, padding: '12px 20px',
+    background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(20px)',
+    borderBottom: '0.5px solid rgba(255,255,255,0.06)',
     flexShrink: 0,
   };
   const msgsStyle = {
     flex: 1, minHeight: 0, overflowY: 'auto',
     WebkitOverflowScrolling: 'touch',
-    padding: '20px', display: 'flex', flexDirection: 'column', gap: 12,
-    background: 'rgba(4,2,16,0.5)',
+    padding: '20px', display: 'flex', flexDirection: 'column', gap: 10,
   };
   const inputRowStyle = {
-    display: 'flex', gap: 10, padding: '14px 18px', flexShrink: 0,
-    background: 'rgba(6,4,20,0.92)', backdropFilter: 'blur(50px)',
-    borderTop: '1px solid rgba(255,255,255,0.07)',
+    display: 'flex', gap: 10, padding: '12px 16px', flexShrink: 0,
+    background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(20px)',
+    borderTop: '0.5px solid rgba(255,255,255,0.06)',
   };
 
   // ── Contact list ─────────────────────────────────────────────────────────
@@ -94,13 +93,13 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
       width: isMobileDevice ? '100%' : '260px',
       minWidth: isMobileDevice ? undefined : '260px',
       flexShrink: 0,
-      background: 'rgba(6,4,20,0.7)', backdropFilter: 'blur(50px)',
-      borderRight: isMobileDevice ? 'none' : '1px solid rgba(255,255,255,0.07)',
+      background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(20px)',
+      borderRight: isMobileDevice ? 'none' : '0.5px solid rgba(255,255,255,0.06)',
       overflowY: 'auto', display: 'flex', flexDirection: 'column',
     }}>
-      <div style={{ padding: '20px 20px 14px', fontWeight: 700, fontSize: 11,
-        letterSpacing: 2, textTransform: 'uppercase', color: theme.textMuted,
-        borderBottom: '1px solid rgba(255,255,255,0.06)', flexShrink: 0 }}>
+      <div style={{ padding: '18px 18px 12px', fontWeight: 500, fontSize: 12,
+        letterSpacing: 0.5, color: theme.textMuted,
+        borderBottom: '0.5px solid rgba(255,255,255,0.06)', flexShrink: 0 }}>
         Messages
       </div>
       {matches.length === 0 && (
@@ -111,13 +110,11 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
       {matches.map(m => (
         <div key={m.id}
           style={{
-            display: 'flex', alignItems: 'center', gap: 14, padding: '13px 18px',
-            cursor: 'pointer', borderBottom: '1px solid rgba(255,255,255,0.04)',
+            display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px',
+            cursor: 'pointer', borderBottom: '0.5px solid rgba(255,255,255,0.04)',
             background: activeChatPartner?.id === m.id && !isMobileDevice
-              ? 'rgba(139,92,246,0.14)'
-              : hoveredContact === m.id ? 'rgba(139,92,246,0.07)' : 'transparent',
-            boxShadow: activeChatPartner?.id === m.id && !isMobileDevice
-              ? 'inset 2px 0 0 #8b5cf6' : 'none',
+              ? 'rgba(255,255,255,0.08)'
+              : hoveredContact === m.id ? 'rgba(255,255,255,0.04)' : 'transparent',
             position: 'relative', transition: 'background 0.2s',
           }}
           onClick={() => openChat(m)}
@@ -191,8 +188,8 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
         </>
       ) : (
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: theme.textMuted }}>
-          <div style={{ fontSize: 52, marginBottom: 16, animation: 'float 3s ease-in-out infinite' }}>💬</div>
-          <p>Select a match to start chatting</p>
+          <div style={{ fontSize: 40, marginBottom: 14, opacity: 0.3 }}>○</div>
+          <p style={{ fontSize: 14 }}>Select a match to start chatting</p>
         </div>
       )}
     </div>

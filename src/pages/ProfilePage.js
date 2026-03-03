@@ -40,19 +40,19 @@ export default function ProfilePage() {
 
   const disabledInput = {
     ...styles.input,
-    background: 'rgba(0,255,136,0.03)',
+    background: 'rgba(255,255,255,0.03)',
     color: theme.textMuted,
     cursor: 'default',
   };
 
   const saveBtnStyle = saved
-    ? { ...styles.primaryBtn, background: 'linear-gradient(135deg, #34d399, #06b6d4)', boxShadow: '0 4px 24px rgba(52,211,153,0.4)' }
+    ? { ...styles.primaryBtn, background: '#30d158' }
     : styles.primaryBtn;
 
   return (
     <div style={styles.pageWrap}>
-      <h2 style={styles.pageTitle}><span style={{ color: theme.neon, WebkitTextFillColor: 'initial' }}>$</span> my_profile</h2>
-      <p style={styles.pageSubtitle}>// edit your bio and interests</p>
+      <h2 style={styles.pageTitle}>Profile</h2>
+      <p style={styles.pageSubtitle}>Edit your bio and interests</p>
 
       <div style={{ ...styles.profileEditCard, maxWidth: 500 }}>
         {/* Avatar + alias */}
@@ -65,34 +65,34 @@ export default function ProfilePage() {
         </div>
 
         <div style={styles.profileSection}>
-          <label style={styles.label}>email (verified ✓)</label>
+          <label style={styles.label}>Email (verified)</label>
           <input style={disabledInput} value={profile?.email || ''} disabled />
         </div>
 
         <div style={styles.profileSection}>
-          <label style={styles.label}>gender</label>
+          <label style={styles.label}>Gender</label>
           <input style={disabledInput} value={profile?.gender || ''} disabled />
         </div>
 
         <div style={styles.profileSection}>
-          <label style={styles.label}>looking_for</label>
+          <label style={styles.label}>Looking for</label>
           <input style={disabledInput} value={profile?.looking_for || ''} disabled />
         </div>
 
         <div style={styles.profileSection}>
-          <label style={styles.label}>bio (optional)</label>
+          <label style={styles.label}>Bio (optional)</label>
           <textarea
-            style={{ ...styles.input, height: 80, resize: 'vertical', fontFamily: "'Space Mono',monospace" }}
+            style={{ ...styles.input, height: 80, resize: 'vertical' }}
             value={bio}
             onChange={e => setBio(e.target.value)}
             maxLength={200}
-            placeholder="// a bit about you (no personal info!)..."
+            placeholder="A bit about you (no personal info)..."
           />
-          <small style={{ color: theme.textMuted, fontSize: 10, fontFamily: "'Space Mono',monospace" }}>{bio.length}/200</small>
+          <small style={{ color: theme.textMuted, fontSize: 11 }}>{bio.length}/200</small>
         </div>
 
         <div style={styles.profileSection}>
-          <label style={styles.label}>interests (max 6)</label>
+          <label style={styles.label}>Interests (max 6)</label>
           <div style={{ ...styles.interestRow, justifyContent: 'flex-start', marginBottom: 10 }}>
             {interests.map((int, i) => (
               <span key={i} className="tag-pop" style={{ ...styles.interestTag, cursor: 'pointer' }} onClick={() => removeInterest(i)}>
@@ -103,24 +103,19 @@ export default function ProfilePage() {
           <div style={{ display: 'flex', gap: 8 }}>
             <input
               style={{ ...styles.input, margin: 0, flex: 1 }}
-              placeholder="add_interest... (press Enter)"
+              placeholder="Add interest (press Enter)"
               value={newInterest}
               onChange={e => setNewInterest(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addInterest())}
             />
-            <button style={{ ...styles.primaryBtn, width: 'auto', margin: 0, padding: '12px 20px' }} onClick={addInterest} type="button">add</button>
+        <button style={{ ...styles.primaryBtn, width: 'auto', margin: 0, padding: '12px 20px' }} onClick={addInterest} type="button">Add</button>
           </div>
-          <small style={{ color: theme.textMuted, fontSize: 10, fontFamily: "'Space Mono',monospace", marginTop: 6, display: 'block' }}>{interests.length}/6</small>
+          <small style={{ color: theme.textMuted, fontSize: 11, marginTop: 6, display: 'block' }}>{interests.length}/6</small>
         </div>
 
         {error && <div style={styles.error}>{error}</div>}
         <button className="shimmer-btn" style={saveBtnStyle} onClick={save} disabled={saving}>
-          {saving ? (
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ display: 'inline-block', animation: 'saveSpin 0.8s linear infinite' }}>⟳</span>
-              saving...
-            </span>
-          ) : saved ? '✓ saved!' : 'save_profile()'}
+          {saving ? 'Saving...' : saved ? 'Saved!' : 'Save'}
         </button>
       </div>
     </div>

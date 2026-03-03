@@ -77,16 +77,16 @@ export default function SettingsPage() {
 
   const btnBase = {
     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
-    width: '100%', padding: '13px', borderRadius: 12, cursor: 'pointer',
-    fontSize: 14, fontWeight: 700,
-    fontFamily: "'Roboto Condensed',sans-serif",
-    letterSpacing: 2, textTransform: 'uppercase',
-    transition: 'all 0.2s', border: 'none',
+    width: '100%', padding: '13px', borderRadius: 10, cursor: 'pointer',
+    fontSize: 14, fontWeight: 500,
+    fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', sans-serif",
+    letterSpacing: 0,
+    transition: 'all 0.2s cubic-bezier(0.25,0.1,0.25,1)', border: 'none',
   };
 
   return (
     <div style={styles.pageWrap}>
-      <h2 style={styles.pageTitle}><span style={{ color: theme.neon, WebkitTextFillColor: 'initial' }}>✦</span> Settings</h2>
+      <h2 style={styles.pageTitle}>Settings</h2>
       <p style={styles.pageSubtitle}>manage your preferences and account</p>
 
       <div style={{ ...styles.settingsCard, maxWidth: 500 }}>
@@ -103,11 +103,11 @@ export default function SettingsPage() {
               flexShrink: 0,
               padding: '8px 16px',
               borderRadius: 8,
-              border: `1px solid ${notifPerm === 'granted' ? 'rgba(52,211,153,0.4)' : notifPerm === 'denied' ? 'rgba(251,113,133,0.4)' : 'rgba(139,92,246,0.4)'}`,
-              background: notifPerm === 'granted' ? 'rgba(52,211,153,0.08)' : notifPerm === 'denied' ? 'rgba(251,113,133,0.08)' : 'rgba(139,92,246,0.08)',
-              color: notifPerm === 'granted' ? theme.success : notifPerm === 'denied' ? theme.error : theme.neon,
-              fontSize: 12, fontWeight: 700, cursor: 'pointer',
-              fontFamily: "'Roboto Condensed',sans-serif", letterSpacing: 1,
+              border: `1px solid ${notifPerm === 'granted' ? 'rgba(48,209,88,0.3)' : notifPerm === 'denied' ? 'rgba(255,69,58,0.3)' : 'rgba(10,132,255,0.3)'}`,
+              background: notifPerm === 'granted' ? 'rgba(48,209,88,0.06)' : notifPerm === 'denied' ? 'rgba(255,69,58,0.06)' : 'rgba(10,132,255,0.06)',
+              color: notifPerm === 'granted' ? theme.success : notifPerm === 'denied' ? theme.error : theme.accent,
+              fontSize: 12, fontWeight: 500, cursor: 'pointer',
+              fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', sans-serif", letterSpacing: 0,
               transition: 'all 0.2s',
             }}>
             {notifLabel}
@@ -126,7 +126,7 @@ export default function SettingsPage() {
         </div>
 
         {/* Age range */}
-        <div style={{ padding: '18px 0', borderBottom: '1px solid rgba(139,92,246,0.1)' }}>
+        <div style={{ padding: '16px 0', borderBottom: '0.5px solid rgba(255,255,255,0.06)' }}>
           <div style={styles.settingLabel}>Age Range Preference</div>
           <div style={{ display: 'flex', gap: 16, alignItems: 'center', marginTop: 12 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -145,13 +145,13 @@ export default function SettingsPage() {
         {/* Account */}
         <div style={{ padding: '20px 0 8px' }}>
           <div style={styles.settingLabel}>Account</div>
-          <div style={{ color: theme.textMuted, fontSize: 13, marginBottom: 20, fontFamily: "'Space Mono',monospace" }}>
+          <div style={{ color: theme.textMuted, fontSize: 13, marginBottom: 20 }}>
             {profile?.email}
           </div>
 
           <button onClick={handleLogout} disabled={loggingOut} style={{
-            ...btnBase, background: 'rgba(139,92,246,0.08)',
-            border: '1px solid rgba(139,92,246,0.25)', color: theme.neon, marginBottom: 10,
+            ...btnBase, background: 'rgba(255,255,255,0.04)',
+            border: '1px solid rgba(255,255,255,0.1)', color: theme.textMuted, marginBottom: 10,
             transition: 'all 0.2s',
           }}>
             <span style={{ fontSize: 16 }}>→</span>
@@ -179,10 +179,10 @@ export default function SettingsPage() {
 
         <div style={{
           marginTop: 16, padding: '14px 16px',
-          background: 'rgba(139,92,246,0.05)', border: '1px solid rgba(139,92,246,0.12)',
+          background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)',
           borderRadius: 10, fontSize: 12, color: theme.textMuted, lineHeight: 1.6,
         }}>
-          🔒 Your identity is always protected. We never share your email or personal information.
+          Your identity is always protected. We never share your email or personal information.
         </div>
       </div>
     </div>

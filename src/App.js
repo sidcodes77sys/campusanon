@@ -10,8 +10,8 @@ import SettingsPage from './pages/SettingsPage';
 import InfoPage from './pages/InfoPage';
 import { styles, theme, mobileStyles as m } from './pages/styles';
 
-const RC = "'Roboto Condensed', sans-serif";
-const mono = "'Space Mono', monospace";
+const F = "-apple-system, BlinkMacSystemFont, 'Inter', 'SF Pro Display', sans-serif";
+const mono = "'SF Mono', 'Space Mono', monospace";
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
@@ -57,51 +57,46 @@ function LegalModal({ type, onClose }) {
   return (
     <div style={{
       position: 'fixed', inset: 0, zIndex: 1000,
-      background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(8px)',
+      background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       padding: 20,
     }} onClick={onClose}>
       <div style={{
-        background: 'rgba(5,15,50,0.97)', backdropFilter: 'blur(40px)',
-        border: '1px solid rgba(77,159,255,0.2)',
-        borderRadius: 20, padding: 'clamp(24px,5vw,40px)',
+        background: '#1c1c1e',
+        border: '1px solid rgba(255,255,255,0.08)',
+        borderRadius: 16, padding: 'clamp(24px,5vw,40px)',
         maxWidth: 560, width: '100%', maxHeight: '85vh',
         overflowY: 'auto', position: 'relative',
-        boxShadow: '0 40px 100px rgba(10,50,150,0.4)',
+        boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
       }} onClick={e => e.stopPropagation()}>
-        {/* Top accent line */}
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: 'linear-gradient(90deg, transparent, rgba(77,159,255,0.6), transparent)', borderRadius: '20px 20px 0 0' }} />
 
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <span style={{ fontSize: 22 }}>{isPrivacy ? '🔒' : '📋'}</span>
-            <h2 style={{ fontFamily: RC, fontWeight: 800, fontSize: 20, color: theme.text, letterSpacing: 2, textTransform: 'uppercase' }}>
-              {content.title}
-            </h2>
-          </div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
+          <h2 style={{ fontFamily: F, fontWeight: 600, fontSize: 18, color: theme.text }}>
+            {content.title}
+          </h2>
           <button onClick={onClose} style={{
-            background: 'rgba(77,159,255,0.08)', border: '1px solid rgba(77,159,255,0.15)',
-            borderRadius: 8, width: 36, height: 36, cursor: 'pointer',
-            color: theme.textMuted, fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)',
+            borderRadius: 8, width: 32, height: 32, cursor: 'pointer',
+            color: theme.textMuted, fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>✕</button>
         </div>
 
         {/* Sections */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
           {content.sections.map((s, i) => (
-            <div key={i} style={{ paddingBottom: 20, borderBottom: i < content.sections.length - 1 ? '1px solid rgba(77,159,255,0.07)' : 'none' }}>
-              <div style={{ fontFamily: RC, fontWeight: 800, fontSize: 13, color: theme.neon, letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 8 }}>
+            <div key={i} style={{ paddingBottom: 20, borderBottom: i < content.sections.length - 1 ? '0.5px solid rgba(255,255,255,0.06)' : 'none' }}>
+              <div style={{ fontFamily: F, fontWeight: 500, fontSize: 13, color: theme.text, marginBottom: 8 }}>
                 {s.heading}
               </div>
-              <div style={{ color: theme.textMuted, fontSize: 13, lineHeight: 1.8, fontFamily: RC }}>
+              <div style={{ color: theme.textMuted, fontSize: 13, lineHeight: 1.8, fontFamily: F }}>
                 {s.body}
               </div>
             </div>
           ))}
         </div>
 
-        <div style={{ marginTop: 24, textAlign: 'center', color: theme.textDim, fontSize: 11, fontFamily: RC, letterSpacing: 1, textTransform: 'uppercase' }}>
+        <div style={{ marginTop: 24, textAlign: 'center', color: theme.textDim, fontSize: 11, fontFamily: F }}>
           CampusAnon · IIIT Pune · 2026
         </div>
       </div>
@@ -122,9 +117,8 @@ function Header({ profile, currentPage, setCurrentPage, onMenuToggle }) {
           <span style={m.hamburgerLine} />
         </button>
       )}
-      <div style={{ ...styles.headerLogo, gap: 8 }} onClick={() => setCurrentPage('dashboard')}>
-        <span className="logo-breathe" style={{ color: theme.neon, fontSize: 18, display: 'inline-block' }}>✦</span>
-        <span style={{ letterSpacing: 3 }}>CAMPUS<span style={{ background: 'linear-gradient(135deg, #a78bfa, #06b6d4)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>ANON</span></span>
+      <div style={styles.headerLogo} onClick={() => setCurrentPage('dashboard')}>
+        CampusAnon
       </div>
       {profile && !isMobile && (
         <nav style={styles.headerNav}>
@@ -192,9 +186,9 @@ function Sidebar({ profile, currentPage, setCurrentPage, isOpen, onClose, stats 
         <button key={id}
           style={currentPage === id ? { ...styles.sidebarItem, ...styles.sidebarItemActive } : styles.sidebarItem}
           onClick={() => navigate(id)}
-          onMouseEnter={e => { if (currentPage !== id) { e.currentTarget.style.background = 'rgba(139,92,246,0.08)'; e.currentTarget.style.color = theme.text; } }}
+          onMouseEnter={e => { if (currentPage !== id) { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = theme.text; } }}
           onMouseLeave={e => { if (currentPage !== id) { e.currentTarget.style.background = ''; e.currentTarget.style.color = ''; } }}>
-          <span style={{ color: currentPage === id ? theme.neon : theme.textMuted, fontSize: 14, width: 18, textAlign: 'center' }}>{icon}</span>
+          <span style={{ color: currentPage === id ? theme.accent : theme.textMuted, fontSize: 14, width: 18, textAlign: 'center' }}>{icon}</span>
           {label}
         </button>
       ))}
@@ -206,7 +200,7 @@ function Sidebar({ profile, currentPage, setCurrentPage, isOpen, onClose, stats 
           [stats.chats,   'chats'],
         ].map(([n, l]) => (
           <div key={l} style={styles.statBox}>
-            <span style={{ fontSize: 20, fontWeight: 800, color: theme.neon, fontFamily: mono }}>{n}</span>
+            <span style={{ fontSize: 18, fontWeight: 600, color: theme.text, fontFamily: mono }}>{n}</span>
             <span>{l}</span>
           </div>
         ))}
@@ -251,16 +245,8 @@ function BottomNav({ currentPage, setCurrentPage }) {
         const isActive = currentPage === id;
         return (
           <button key={id} style={m.bottomNavBtn} onClick={() => setCurrentPage(id)}>
-            {isActive && (
-              <span style={{
-                position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)',
-                width: 32, height: 2, borderRadius: 2,
-                background: 'linear-gradient(90deg, #8b5cf6, #06b6d4)',
-                boxShadow: '0 0 8px rgba(139,92,246,0.8)',
-              }} />
-            )}
-            <span style={{ fontSize: 20, color: isActive ? '#a78bfa' : 'rgba(220,215,255,0.3)', display: 'block', transition: 'color 0.2s', transform: isActive ? 'scale(1.15)' : 'scale(1)', transitionProperty: 'color, transform' }}>{icon}</span>
-            <span style={{ fontSize: 10, color: isActive ? '#a78bfa' : 'rgba(220,215,255,0.3)', marginTop: 3, letterSpacing: 0.5, textTransform: 'uppercase', fontFamily: RC, transition: 'color 0.2s' }}>{label}</span>
+            <span style={{ fontSize: 18, color: isActive ? theme.accent : 'rgba(245,245,247,0.3)', display: 'block', transition: 'color 0.2s' }}>{icon}</span>
+            <span style={{ fontSize: 10, color: isActive ? theme.accent : 'rgba(245,245,247,0.3)', marginTop: 3, letterSpacing: 0.3, fontFamily: F, transition: 'color 0.2s' }}>{label}</span>
           </button>
         );
       })}
@@ -274,16 +260,11 @@ function Footer({ setCurrentPage, onLegal, currentPage }) {
   if (currentPage === 'chat') return null;  // chat needs full height
   return (
     <footer style={styles.footer}>
-      <span style={{ color: theme.neon }}>✦</span>
-      <span style={{ marginLeft: 8 }}>CampusAnon · Anonymous Connections</span>
-      <span style={{ margin: '0 16px', color: 'rgba(255,255,255,0.08)' }}>·</span>
-      <span>🔒 Identities Always Protected</span>
-      <span style={{ marginLeft: 'auto', display: 'flex', gap: 20, alignItems: 'center' }}>
+      <span>CampusAnon</span>
+      <span style={{ margin: '0 8px', color: 'rgba(255,255,255,0.1)' }}>·</span>
+      <span style={{ marginLeft: 'auto', display: 'flex', gap: 16, alignItems: 'center' }}>
         <span style={{ ...styles.footerLink, cursor: 'pointer' }} onClick={() => onLegal('privacy')}>Privacy</span>
         <span style={{ ...styles.footerLink, cursor: 'pointer' }} onClick={() => onLegal('terms')}>Terms</span>
-        <span style={{ color: theme.textMuted }}>
-          Made with <span style={{ color: theme.neon }}>♥</span> for students
-        </span>
       </span>
     </footer>
   );
@@ -305,8 +286,7 @@ function InnerApp() {
   if (loading) return (
     <div style={styles.appWrap}>
       <div style={styles.loadingWrap}>
-        <span style={{ color: theme.neon, fontSize: 20 }}>✦</span>
-        <span>Initializing...</span>
+        <span style={{ color: theme.textMuted, fontSize: 14 }}>Loading...</span>
       </div>
     </div>
   );
