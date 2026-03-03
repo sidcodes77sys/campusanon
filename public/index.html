@@ -57,6 +57,19 @@
       position: fixed; inset: 0; z-index: 0; pointer-events: none;
     }
 
+    /* ── Vignette overlay ────────────────────────────────────── */
+    #vignette {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: radial-gradient(ellipse at center, transparent 0%, transparent 50%, rgba(0,0,0,0.4) 100%);
+    }
+
+    #grain {
+      display: none;
+    }
+
     #root { position: relative; z-index: 2; }
 
     /* ── 3D tilt on cards ────────────────────────────────────── */
@@ -138,6 +151,7 @@
 </head>
 <body>
   <canvas id="bg-canvas"></canvas>
+  <div id="vignette"></div>
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <div id="root"></div>
 
@@ -178,114 +192,121 @@
   })();
 
   // ═══════════════════════════════════════════════════════════
-  //  2. SUBTLE CANVAS — barely-there moving background
+  //  2. AMBIENT AURORA CANVAS — subtle mesh gradient background
   // ═══════════════════════════════════════════════════════════
   (function() {
     const canvas = document.getElementById('bg-canvas');
-    const ctx    = canvas.getContext('2d');
-    let W, H, time = 0;
+    const ctx = canvas.getContext('2d');
+    let W, H;
 
-    const COLORS = [
-      [255, 255, 255],
-      [10,  132, 255],
-      [100, 100, 100],
+    // Check for reduced motion preference
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isMobile = window.screen.width < 768;
+
+    const ORB_COLORS = [
+      { r: 10, g: 132, b: 255, a: 0.04 },   // Apple blue
+      { r: 94, g: 92, b: 230, a: 0.035 },    // Indigo
+      { r: 48, g: 209, b: 88, a: 0.02 },     // Green (very subtle)
+      { r: 175, g: 82, b: 222, a: 0.03 },    // Purple
     ];
 
     function resize() {
-      W = canvas.width  = window.innerWidth;
+      W = canvas.width = window.innerWidth;
       H = canvas.height = window.innerHeight;
     }
 
-    function makeOrb() {
-      const c = COLORS[Math.floor(Math.random() * COLORS.length)];
+    // Orbs
+    function makeOrb(i) {
+      const c = ORB_COLORS[i % ORB_COLORS.length];
       return {
-        x: Math.random() * W, y: Math.random() * H,
-        r: Math.random() * 300 + 150,
+        x: Math.random() * W,
+        y: Math.random() * H,
+        baseR: 300 + Math.random() * 200,
         vx: (Math.random() - 0.5) * 0.15,
         vy: (Math.random() - 0.5) * 0.15,
         color: c,
-        alpha: Math.random() * 0.015 + 0.015,
         phase: Math.random() * Math.PI * 2,
-        freq:  Math.random() * 0.0005 + 0.0002,
+        breatheSpeed: 0.0003 + Math.random() * 0.0002,
       };
     }
 
+    // Particles (distant stars)
     function makeParticle() {
-      const c = COLORS[Math.floor(Math.random() * COLORS.length)];
       return {
-        x: Math.random() * W, y: Math.random() * H,
-        r: Math.random() * 1.2 + 0.3,
-        vx: (Math.random() - 0.5) * 0.2,
-        vy: (Math.random() - 0.5) * 0.2,
-        color: c,
-        alpha: Math.random() * 0.1 + 0.05,
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: 0.5 + Math.random() * 1,
+        vx: (Math.random() - 0.5) * 0.15,
+        vy: (Math.random() - 0.5) * 0.15,
+        alpha: 0.05 + Math.random() * 0.1,
         twinkle: Math.random() * Math.PI * 2,
-        twinkleSpeed: Math.random() * 0.015 + 0.004,
+        twinkleSpeed: 0.008 + Math.random() * 0.012,
       };
     }
 
+    const orbCount = isMobile ? 2 : 4;
+    const particleCount = isMobile ? 10 : 25;
     let orbs = [];
     let particles = [];
+    let time = 0;
+    let animate = !prefersReducedMotion;
 
-    function init() {
-      resize();
-      orbs      = Array.from({ length: 3  }, makeOrb);
-      particles = Array.from({ length: 30 }, makeParticle);
-    }
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(0, 0, W, H);
 
-    function drawOrbs() {
+      // Draw orbs
       orbs.forEach(o => {
-        o.vx *= 0.998; o.vy *= 0.998;
-        const breathe = Math.sin(time * o.freq + o.phase) * 0.15 + 1;
-        const r = o.r * breathe;
+        const breathe = Math.sin(time * o.breatheSpeed + o.phase) * 0.1 + 1;
+        const r = o.baseR * breathe;
 
         const g = ctx.createRadialGradient(o.x, o.y, 0, o.x, o.y, r);
-        g.addColorStop(0,   `rgba(${o.color[0]},${o.color[1]},${o.color[2]},${o.alpha * 2})`);
-        g.addColorStop(0.5, `rgba(${o.color[0]},${o.color[1]},${o.color[2]},${o.alpha})`);
-        g.addColorStop(1,   `rgba(${o.color[0]},${o.color[1]},${o.color[2]},0)`);
+        g.addColorStop(0, `rgba(${o.color.r},${o.color.g},${o.color.b},${o.color.a * 1.5})`);
+        g.addColorStop(0.5, `rgba(${o.color.r},${o.color.g},${o.color.b},${o.color.a})`);
+        g.addColorStop(1, `rgba(${o.color.r},${o.color.g},${o.color.b},0)`);
 
         ctx.beginPath();
         ctx.arc(o.x, o.y, r, 0, Math.PI * 2);
         ctx.fillStyle = g;
         ctx.fill();
 
-        o.x += o.vx; o.y += o.vy;
-        if (o.x < -r)  o.x = W + r;
-        if (o.x > W+r) o.x = -r;
-        if (o.y < -r)  o.y = H + r;
-        if (o.y > H+r) o.y = -r;
+        // Move
+        o.x += o.vx;
+        o.y += o.vy;
+        if (o.x < -r) o.x = W + r;
+        if (o.x > W + r) o.x = -r;
+        if (o.y < -r) o.y = H + r;
+        if (o.y > H + r) o.y = -r;
       });
-    }
 
-    function drawParticles() {
+      // Draw particles
       particles.forEach(p => {
         p.twinkle += p.twinkleSpeed;
-        const a = p.alpha * (0.5 + 0.5 * Math.sin(p.twinkle));
+        const a = p.alpha * (0.4 + 0.6 * Math.sin(p.twinkle));
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${p.color[0]},${p.color[1]},${p.color[2]},${a})`;
+        ctx.fillStyle = `rgba(255,255,255,${a})`;
         ctx.fill();
 
-        p.x += p.vx; p.y += p.vy;
-        if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
-        if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0) p.x = W;
+        if (p.x > W) p.x = 0;
+        if (p.y < 0) p.y = H;
+        if (p.y > H) p.y = 0;
       });
-    }
 
-    function frame() {
-      ctx.clearRect(0, 0, W, H);
-      ctx.fillStyle = '#000000';
-      ctx.fillRect(0, 0, W, H);
-      drawOrbs();
-      drawParticles();
       time++;
-      requestAnimationFrame(frame);
+      if (animate) requestAnimationFrame(draw);
     }
 
     window.addEventListener('resize', resize);
-    init();
-    frame();
+    resize();
+    orbs = Array.from({ length: orbCount }, (_, i) => makeOrb(i));
+    particles = Array.from({ length: particleCount }, makeParticle);
+    draw();
   })();
   </script>
 </body>
