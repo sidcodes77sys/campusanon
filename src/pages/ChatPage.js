@@ -17,6 +17,7 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading]   = useState(false);
   const [mobileView, setMobileView] = useState(activeChatPartner ? 'chat' : 'list');
+  const [hoveredContact, setHoveredContact] = useState(null);
   const bottomRef  = useRef(null);
   const channelRef = useRef(null);
   const inputRef   = useRef(null);
@@ -71,7 +72,7 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
   // ── Shared inner styles ──────────────────────────────────────────────────
   const headerStyle = {
     display: 'flex', alignItems: 'center', gap: 14, padding: '13px 24px',
-    background: 'rgba(6,4,20,0.92)', backdropFilter: 'blur(40px)',
+    background: 'rgba(6,4,20,0.92)', backdropFilter: 'blur(50px)',
     borderBottom: '1px solid rgba(255,255,255,0.07)',
     flexShrink: 0,
   };
@@ -83,7 +84,7 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
   };
   const inputRowStyle = {
     display: 'flex', gap: 10, padding: '14px 18px', flexShrink: 0,
-    background: 'rgba(6,4,20,0.92)', backdropFilter: 'blur(40px)',
+    background: 'rgba(6,4,20,0.92)', backdropFilter: 'blur(50px)',
     borderTop: '1px solid rgba(255,255,255,0.07)',
   };
 
@@ -93,7 +94,7 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
       width: isMobileDevice ? '100%' : '260px',
       minWidth: isMobileDevice ? undefined : '260px',
       flexShrink: 0,
-      background: 'rgba(6,4,20,0.7)', backdropFilter: 'blur(40px)',
+      background: 'rgba(6,4,20,0.7)', backdropFilter: 'blur(50px)',
       borderRight: isMobileDevice ? 'none' : '1px solid rgba(255,255,255,0.07)',
       overflowY: 'auto', display: 'flex', flexDirection: 'column',
     }}>
@@ -113,12 +114,15 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
             display: 'flex', alignItems: 'center', gap: 14, padding: '13px 18px',
             cursor: 'pointer', borderBottom: '1px solid rgba(255,255,255,0.04)',
             background: activeChatPartner?.id === m.id && !isMobileDevice
-              ? 'rgba(124,58,237,0.12)' : 'transparent',
+              ? 'rgba(139,92,246,0.14)'
+              : hoveredContact === m.id ? 'rgba(139,92,246,0.07)' : 'transparent',
             boxShadow: activeChatPartner?.id === m.id && !isMobileDevice
-              ? 'inset 2px 0 0 #7c3aed' : 'none',
-            position: 'relative', transition: 'background 0.15s',
+              ? 'inset 2px 0 0 #8b5cf6' : 'none',
+            position: 'relative', transition: 'background 0.2s',
           }}
-          onClick={() => openChat(m)}>
+          onClick={() => openChat(m)}
+          onMouseEnter={() => setHoveredContact(m.id)}
+          onMouseLeave={() => setHoveredContact(null)}>
           <div style={styles.chatListAvatar}>{m.alias?.[0]}</div>
           <div style={{ flex: 1, overflow: 'hidden' }}>
             <div style={styles.chatListName}>{m.alias}</div>
@@ -146,14 +150,25 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
             <div>
               <div style={styles.chatHeaderName}>{activeChatPartner.alias}</div>
               <div style={styles.chatHeaderStatus}>
-                {isOnline(activeChatPartner.last_seen) ? '● Online' : '● Offline'}
+                {isOnline(activeChatPartner.last_seen)
+                  ? <span style={{ color: theme.success }}>● Online</span>
+                  : <span>● Offline</span>}
               </div>
             </div>
             <div style={{ marginLeft: 'auto', color: theme.textMuted, fontSize: 11 }}>🔒 anonymous</div>
           </div>
 
           <div style={msgsStyle}>
-            {loading && <div style={{ textAlign: 'center', color: theme.textMuted, padding: 20 }}>Loading...</div>}
+            {loading && (
+              <div style={{ textAlign: 'center', color: theme.textMuted, padding: 20 }}>
+                {/* Typing indicator as loading state */}
+                <div style={styles.typingIndicator}>
+                  {[0,1,2].map(i => (
+                    <div key={i} style={{ ...styles.typingDot, animationDelay: `${i * 0.16}s` }} />
+                  ))}
+                </div>
+              </div>
+            )}
             {messages.map((msg) => {
               const isMe = msg.sender_id === profile.id;
               return (
@@ -161,6 +176,7 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
                   <div style={isMe ? styles.msgBubbleMe : styles.msgBubbleThem}>{msg.content}</div>
                   <div style={styles.msgTime}>
                     {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    {isMe && <span style={{ marginLeft: 4, color: theme.success }}>✓</span>}
                   </div>
                 </div>
               );
@@ -170,12 +186,12 @@ export default function ChatPage({ activeChatPartner, setActiveChatPartner }) {
 
           <form style={inputRowStyle} onSubmit={handleSend}>
             <input ref={inputRef} style={styles.chatInput} placeholder="Type a message..." defaultValue="" autoComplete="off" />
-            <button style={styles.sendBtn} type="submit">Send ➤</button>
+            <button className="shimmer-btn" style={styles.sendBtn} type="submit">Send ➤</button>
           </form>
         </>
       ) : (
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: theme.textMuted }}>
-          <div style={{ fontSize: 48, marginBottom: 16 }}>💬</div>
+          <div style={{ fontSize: 52, marginBottom: 16, animation: 'float 3s ease-in-out infinite' }}>💬</div>
           <p>Select a match to start chatting</p>
         </div>
       )}
