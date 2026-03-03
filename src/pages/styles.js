@@ -19,7 +19,7 @@ export const theme = {
   error:           '#ff453a',
   gradient:        'linear-gradient(135deg, #0a84ff 0%, #5e5ce6 100%)',
   gradientPink:    'linear-gradient(135deg, #ff375f 0%, #ff6482 100%)',
-  glass:           'rgba(28,28,30,0.8)',
+  glass:           'rgba(28,28,30,0.6)',
   border:          'rgba(255,255,255,0.08)',
 };
 
@@ -27,10 +27,10 @@ const F = "-apple-system, BlinkMacSystemFont, 'Inter', 'SF Pro Display', sans-se
 const M = "'SF Mono', 'Space Mono', monospace";
 
 const glass = {
-  background:           'rgba(28,28,30,0.8)',
+  background:           'rgba(28,28,30,0.6)',
   backdropFilter:       'blur(20px)',
   WebkitBackdropFilter: 'blur(20px)',
-  border:               '1px solid rgba(255,255,255,0.08)',
+  border:               '1px solid rgba(255,255,255,0.06)',
 };
 
 export const styles = {
@@ -51,7 +51,7 @@ export const styles = {
   // ── Header ────────────────────────────────────────────────────────────────
   header: {
     display: 'flex', alignItems: 'center', padding: '0 28px', height: 48,
-    background: 'rgba(0,0,0,0.8)',
+    background: 'rgba(0,0,0,0.7)',
     backdropFilter: 'saturate(180%) blur(20px)',
     WebkitBackdropFilter: 'saturate(180%) blur(20px)',
     borderBottom: '0.5px solid rgba(255,255,255,0.08)',
@@ -307,7 +307,7 @@ export const styles = {
   chatLayout: { display: 'flex', flex: 1, height: '100%', overflow: 'hidden', background: 'transparent' },
   chatList: {
     width: '260px', minWidth: '260px',
-    background: 'rgba(0,0,0,0.4)',
+    background: 'rgba(0,0,0,0.5)',
     backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
     borderRight: '0.5px solid rgba(255,255,255,0.06)',
     overflowY: 'auto', flexShrink: 0,
@@ -351,6 +351,7 @@ export const styles = {
     flex: 1, minHeight: 0, overflowY: 'auto', padding: '20px',
     display: 'flex', flexDirection: 'column', gap: 10,
     WebkitOverflowScrolling: 'touch',
+    background: 'rgba(0,0,0,0.2)',
   },
   msgWrapMe:   { display: 'flex', flexDirection: 'column', alignItems: 'flex-end' },
   msgWrapThem: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start' },
@@ -455,7 +456,9 @@ export const styles = {
     borderTop: '0.5px solid rgba(255,255,255,0.06)',
     padding: '12px 28px', fontSize: 12, color: theme.textMuted,
     display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 6,
-    fontFamily: F, background: 'transparent',
+    fontFamily: F, background: 'rgba(0,0,0,0.7)',
+    backdropFilter: 'blur(20px)',
+    WebkitBackdropFilter: 'blur(20px)',
   },
   footerLink: { color: theme.textMuted, textDecoration: 'none', cursor: 'pointer', transition: 'color 0.2s' },
 
@@ -502,7 +505,7 @@ export const mobileStyles = {
   },
   bottomNav: {
     position: 'fixed', bottom: 0, left: 0, right: 0, height: 64,
-    background: 'rgba(0,0,0,0.9)', backdropFilter: 'blur(20px)',
+    background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(20px)',
     borderTop: '0.5px solid rgba(255,255,255,0.08)',
     display: 'flex', alignItems: 'center',
     zIndex: 100,
