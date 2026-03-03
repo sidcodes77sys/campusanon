@@ -26,18 +26,17 @@ export default function MatchesPage({ setCurrentPage, setActiveChatPartner }) {
 
   if (loading) return (
     <div style={styles.loadingWrap}>
-      <span style={{ color: theme.neon, fontSize: 24, animation: 'breathe 2s ease-in-out infinite' }}>💞</span>
-      Loading matches...
+      <span style={{ color: theme.textMuted }}>Loading...</span>
     </div>
   );
 
   return (
     <div style={styles.pageWrap}>
-      <h2 style={styles.pageTitle}>My Matches <span style={{ WebkitTextFillColor: 'initial' }}>💞</span></h2>
+      <h2 style={styles.pageTitle}>Matches</h2>
       <p style={styles.pageSubtitle}>These people liked you back. Start a conversation!</p>
       {matches.length === 0 ? (
         <div style={styles.emptyState}>
-          <div style={styles.emptyIcon}>🌱</div>
+          <div style={styles.emptyIcon}>○</div>
           <p style={{ fontWeight: 600, color: theme.text, fontSize: 16, margin: 0 }}>No matches yet</p>
           <p style={{ color: theme.textMuted, fontSize: 13, maxWidth: 220, margin: 0 }}>Keep swiping — your match is out there!</p>
         </div>
@@ -48,7 +47,6 @@ export default function MatchesPage({ setCurrentPage, setActiveChatPartner }) {
               ...styles.matchCard,
               animationDelay: `${idx * 0.06}s`,
             }}>
-              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: 'linear-gradient(90deg, transparent, rgba(139,92,246,0.5), transparent)' }} />
               <div style={isOnline(m.last_seen) ? styles.matchAvatarOnline : styles.matchAvatar}>{m.alias?.[0]}</div>
               <div style={styles.matchAlias}>{m.alias}</div>
               <div style={styles.matchMeta}>
@@ -60,11 +58,11 @@ export default function MatchesPage({ setCurrentPage, setActiveChatPartner }) {
               <div style={styles.interestRow}>
                 {(m.interests || []).map(i => <span key={i} style={styles.interestTagSm}>{i}</span>)}
               </div>
-              <button className="shimmer-btn" style={styles.primaryBtn} onClick={() => {
+              <button style={{ ...styles.primaryBtn, marginTop: 6 }} onClick={() => {
                 setActiveChatPartner(m);
                 setCurrentPage('chat');
               }}>
-                💬 Message
+                Message
               </button>
             </div>
           ))}

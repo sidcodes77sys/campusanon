@@ -86,11 +86,9 @@ export default function AuthPage() {
   return (
     <div style={styles.authWrap}>
       <div className="tilt-card" style={styles.authCard}>
-        <div style={styles.authCardTopLine} />
         <div style={{ textAlign: 'center', marginBottom: 6 }}>
-          <span style={{ fontSize: 36, background: theme.gradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>✦</span>
         </div>
-        <div style={styles.authTitle}>Campus<span style={{ color: theme.neon }}>Anon</span></div>
+        <div style={styles.authTitle}>CampusAnon</div>
         <div style={styles.authSubtitle}>
           anonymous dating for your college community<br/>
           <span style={{ color: theme.textDim, fontSize: 11 }}>your identity is always protected</span>
